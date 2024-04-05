@@ -1,0 +1,13 @@
+/* Set the background color to #007FFF */
+body {
+  background-color: #2196f3;
+}
+
+
+.div-container {
+    width: 50%;
+}
+
+.grid-header {
+    background-color: #2196f3;
+}

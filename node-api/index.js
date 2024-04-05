@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const cors = require('cors');
 const app = express();
 const PORT = 8080;
 
@@ -16,6 +17,7 @@ const dadosModel = mongoose.model('dados', DadosSchema);
 
 // App setup
 app.use(express.json());
+app.use(cors());
 app.listen(
     PORT,
     () => console.log(`Servidor rodando na porta ${PORT}`)
@@ -59,7 +61,7 @@ app.get('/', (req, res) => {
 // Rotas banco de dados
 // Rota para pegar todos os dados
 app.get('/dados', async (req, res) => {
-    console.log('Rota "/dados" (GET) acessada!');
+    console.log('Rota "/dados" alteracoes (GET) acessada!');
 
     try {
         const data = await dadosModel.find({});
