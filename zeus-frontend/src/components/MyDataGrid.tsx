@@ -17,19 +17,19 @@ export const MyDataGrid = ({ rows, headerClassName }: MyDataGridProps) => {
     {
       field: "data",
       headerName: "Data",
-      width: 150,
+      width: 200,
       headerClassName: headerClassName,
     },
     {
       field: "quantidade",
       headerName: "Quantidade",
-      width: 150,
+      width: 200,
       headerClassName: headerClassName,
     },
     {
       field: "dinheiro",
       headerName: "Dinheiro",
-      width: 150,
+      width: 200,
       headerClassName: headerClassName,
     },
   ];
