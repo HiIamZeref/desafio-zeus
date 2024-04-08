@@ -34,9 +34,21 @@ const theme = createTheme({
                     backgroundColor: 'white',
                     borderRadius: 25,
                     padding: 25,
+                    
                 },
             },
         
+        },
+        MuiButton: {
+            styleOverrides: {
+                root: {
+                    borderRadius: 25,
+                    padding: 10,
+                    margin: 10,
+                    backgroundColor: "#2196f3",
+                    color: "white"
+                },
+            },
         },
     },
     typography: {

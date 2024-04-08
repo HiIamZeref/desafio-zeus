@@ -1,7 +1,8 @@
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { ObjectId } from "mongoose";
 
 interface Row {
-  id: number;
+  _id: ObjectId;
   data: string;
   quantidade: number;
   dinheiro: number;
@@ -16,19 +17,19 @@ export const MyDataGrid = ({ rows, headerClassName }: MyDataGridProps) => {
   const columns: GridColDef<(typeof rows)[number]>[] = [
     {
       field: "data",
-      headerName: "Data",
+      headerName: "Data (YYYY-MM-DD)",
       width: 200,
       headerClassName: headerClassName,
     },
     {
       field: "quantidade",
-      headerName: "Quantidade",
+      headerName: "Quantidade (Kg)",
       width: 200,
       headerClassName: headerClassName,
     },
     {
       field: "dinheiro",
-      headerName: "Dinheiro",
+      headerName: "Dinheiro (R$)",
       width: 200,
       headerClassName: headerClassName,
     },
@@ -40,6 +41,7 @@ export const MyDataGrid = ({ rows, headerClassName }: MyDataGridProps) => {
         rows={rows}
         columns={columns}
         disableRowSelectionOnClick
+        // style={{ width: "100%" }}
       ></DataGrid>
     </>
   );

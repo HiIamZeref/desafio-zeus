@@ -9,7 +9,9 @@ mongoose.connect("mongodb+srv://felipegaby:12345@cluster0.tet07xv.mongodb.net/ze
 
 // Definição do schema e do model
 const DadosSchema = new mongoose.Schema({
-    nome: String
+    data: String,
+    quantidade: Number,
+    dinheiro: Number
 }, { versionKey: false });
 
 const dadosModel = mongoose.model('dados', DadosSchema);
@@ -83,17 +85,17 @@ app.get('/dados', async (req, res) => {
 app.post('/dados', async (req, res) => {
     console.log('Rota "/dados" (POST) acessada!');
 
-    const { nome } = req.body;
+    const { data, quantidade, dinheiro } = req.body;
 
-    if (!nome) {
+    if (!data || !quantidade || !dinheiro) {
         res.status(418).send({
             'status': 'error',
-            'message': 'Preciso de um nome de usuário!'
+            'message': 'Parametros faltando!'
         });
     }
 
     try {
-        const data = new dadosModel({ nome });
+        const data = new dadosModel({ data, quantidade, dinheiro });
         await data.save();
         res.status(201).send(data);
         console.log("Dado inserido com sucesso!");

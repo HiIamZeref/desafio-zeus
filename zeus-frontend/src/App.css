@@ -4,11 +4,28 @@ body {
 }
 
 
-.div-container {
-    width: 50%;
-}
 
 .grid-header {
     background-color: #2196f3;
     color: white;
+    padding: 10px;
+}
+
+.text-field-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Adjust gap for spacing between elements */
+}
+
+.default-btn {
+  background-color: #2196f3;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+h3 {
+  font-family: 'Roboto', sans-serif;
 }
