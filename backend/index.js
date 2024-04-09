@@ -95,9 +95,9 @@ app.post('/dados', async (req, res) => {
     }
 
     try {
-        const data = new dadosModel({ data, quantidade, dinheiro });
-        await data.save();
-        res.status(201).send(data);
+        const dataObject = new dadosModel({ data, quantidade, dinheiro });
+        await dataObject.save();
+        res.status(201).send(dataObject);
         console.log("Dado inserido com sucesso!");
     } catch (err) {
         res.status(500).send({
@@ -106,6 +106,7 @@ app.post('/dados', async (req, res) => {
         });
 
         console.log("Erro ao inserir dado!");
+        console.log(err.message + " errei");
     }
 
 });

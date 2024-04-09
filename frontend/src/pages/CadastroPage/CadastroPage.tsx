@@ -1,14 +1,16 @@
-import "./App.css";
+import "../../App.css";
 import { Container, ThemeProvider } from "@mui/material";
-import theme from "./styles/theme/default";
-import { TextField } from "@mui/material";
-import { MyDataGrid } from "./components/MyDataGrid";
+import theme from "../../styles/theme/default";
+import { MyDataGrid } from "../../components/MyDataGrid";
 import { Button } from "@mui/material";
 import { useEffect, useState } from "react";
-import { getDados, postDados } from "./services/Api";
+import { getDados, postDados } from "../../services/Api";
 import Grid from "@mui/material/Unstable_Grid2";
 import { ObjectId } from "mongoose";
 import { InputNumber } from "antd";
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+import { ValueMaxDatePicker } from "../../components/ValueMaxDatePicker";
 
 // Interface para os dados da tabela
 interface Row {
@@ -17,12 +19,11 @@ interface Row {
   quantidade: number;
   dinheiro: number;
 }
+dayjs.extend(customParseFormat);
 
-function App() {
+function CadastroPage() {
   // Gerando a data atual
-  const dateGen = new Date();
-  const formattedDate = dateGen.toISOString().split("T")[0];
-
+  const formattedDate = dayjs().format("YYYY-MM-DD");
   const [rows, setRows] = useState<Row[]>([]);
 
   const [data, setData] = useState(formattedDate);
@@ -31,6 +32,27 @@ function App() {
 
   // Pegar informações do backend
   useEffect(() => {
+    atualizarTabela();
+  }, []);
+
+  const onClickSubmit = () => {
+    console.log("Clicou");
+    console.log(data);
+
+    const postObject = {
+      data: data,
+      quantidade: quantidadeRacao,
+      dinheiro: valorRacao,
+    };
+    console.log(postObject);
+
+    // Enviando os dados para o backend
+    postDados(postObject).then(() => {
+      atualizarTabela();
+    });
+  };
+
+  const atualizarTabela = function () {
     getDados()
       .then((data: Row[]) => {
         console.log(data);
@@ -46,13 +68,6 @@ function App() {
       .catch((error) => {
         console.error(error);
       });
-  }, []);
-
-  const onClickSubmit = () => {
-    console.log("Clicou");
-    console.log(data, quantidadeRacao, valorRacao);
-
-    // Enviando os dados para o backend
   };
 
   return (
@@ -61,7 +76,7 @@ function App() {
         <Grid container spacing={2}>
           <Grid xs={12} sm={6} lg={6} className="text-field-container">
             <h3>Data da compra:</h3>
-            <TextField
+            {/* <TextField
               id="dataCompra"
               label="Date"
               type="date"
@@ -72,6 +87,14 @@ function App() {
               placeholder="05/04/2024"
               InputLabelProps={{
                 shrink: true,
+              }}
+            /> */}
+
+            <ValueMaxDatePicker
+              value={data}
+              maxDate={data}
+              onChange={() => {
+                setData(data);
               }}
             />
 
@@ -88,6 +111,7 @@ function App() {
               }}
               suffix="kg"
               min={1}
+              max={999.99}
             />
             <h3>Valor gasto: </h3>
             <InputNumber
@@ -97,6 +121,7 @@ function App() {
               value={valorRacao}
               prefix="R$"
               min={1}
+              max={9999.99}
               onChange={(value) => {
                 if (value !== null) {
                   setValorRacao(value);
@@ -122,4 +147,4 @@ function App() {
   );
 }
 
-export default App;
+export default CadastroPage;

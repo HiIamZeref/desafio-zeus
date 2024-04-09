@@ -41,7 +41,10 @@ export const MyDataGrid = ({ rows, headerClassName }: MyDataGridProps) => {
         rows={rows}
         columns={columns}
         disableRowSelectionOnClick
-        // style={{ width: "100%" }}
+        initialState={{
+          pagination: { paginationModel: { pageSize: 5 } },
+        }}
+        // pageSizeOptions={[5, 10, 20]}
       ></DataGrid>
     </>
   );
