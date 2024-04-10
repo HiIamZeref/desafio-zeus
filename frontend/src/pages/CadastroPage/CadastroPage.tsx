@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { getDados, postDados } from "../../services/Api";
 import Grid from "@mui/material/Unstable_Grid2";
 import { ObjectId } from "mongoose";
-import { InputNumber } from "antd";
+import { InputNumber, Statistic } from "antd";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { ValueMaxDatePicker } from "../../components/ValueMaxDatePicker";
@@ -72,23 +72,10 @@ function CadastroPage() {
 
   return (
     <ThemeProvider theme={theme}>
-      <Container>
+      <Container maxHeight="lg">
         <Grid container spacing={2}>
           <Grid xs={12} sm={6} lg={6} className="text-field-container">
             <h3>Data da compra:</h3>
-            {/* <TextField
-              id="dataCompra"
-              label="Date"
-              type="date"
-              defaultValue={data} // 2024-04-05
-              onChange={(e) => {
-                setData(e.target.value);
-              }}
-              placeholder="05/04/2024"
-              InputLabelProps={{
-                shrink: true,
-              }}
-            /> */}
 
             <ValueMaxDatePicker
               value={data}
@@ -139,6 +126,12 @@ function CadastroPage() {
             </Button>
           </Grid>
           <Grid xs={12} sm={6} lg={6}>
+            <Statistic
+              title="Total gasto nesse mês"
+              value={100}
+              precision={2}
+              decimalSeparator=","
+            />
             <MyDataGrid rows={rows} headerClassName="grid-header" />
           </Grid>
         </Grid>
