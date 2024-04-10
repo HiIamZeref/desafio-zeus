@@ -1,15 +1,23 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import CadastroPage from "../pages/CadastroPage/CadastroPage";
+import ErrorPage from "../pages/ErrorPage/ErrorPage";
 
 function RouterApp() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<CadastroPage />}></Route>
-      </Routes>
-    </BrowserRouter>
-  );
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: <CadastroPage />,
+      children: [],
+      errorElement: (
+        <div>
+          <ErrorPage />
+        </div>
+      ),
+    },
+  ]);
+
+  return <RouterProvider router={router} />;
 }
 
 export default RouterApp;
