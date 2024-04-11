@@ -44,7 +44,7 @@ export const MyDataGrid = ({ rows, headerClassName }: MyDataGridProps) => {
         initialState={{
           pagination: { paginationModel: { pageSize: 5 } },
         }}
-        // pageSizeOptions={[5, 10, 20]}
+        pageSizeOptions={[5, 10, 20]}
       ></DataGrid>
     </>
   );

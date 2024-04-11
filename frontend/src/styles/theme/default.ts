@@ -28,9 +28,10 @@ const theme = createTheme({
     MuiContainer: {
       styleOverrides: {
         root: {
-          backgroundColor: "white",
+          backgroundColor: "#F6F6F6",
           borderRadius: 25,
           padding: 25,
+          height: "900px",
         },
       },
     },
@@ -40,8 +41,11 @@ const theme = createTheme({
           borderRadius: 25,
           padding: 10,
           margin: 10,
-          backgroundColor: "#2196f3",
+          backgroundColor: "#f0a30a",
           color: "white",
+          "&:hover": {
+            backgroundColor: "#E79D09",
+          },
         },
       },
     },

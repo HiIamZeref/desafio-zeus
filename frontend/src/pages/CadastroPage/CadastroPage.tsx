@@ -72,7 +72,7 @@ function CadastroPage() {
 
   return (
     <ThemeProvider theme={theme}>
-      <Container maxHeight="lg">
+      <Container>
         <Grid container spacing={2}>
           <Grid xs={12} sm={6} lg={6} className="text-field-container">
             <h3>Data da compra:</h3>

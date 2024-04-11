@@ -1,14 +1,12 @@
 /* Set the background color to #007FFF */
 body {
-  background-color: #2196f3;
+  background-color: #3a609b;
 }
 
-
-
 .grid-header {
-    background-color: #2196f3;
-    color: white;
-    padding: 10px;
+  background-color: #f0a30a;
+  color: white;
+  padding: 10px;
 }
 
 .text-field-container {
@@ -27,5 +25,5 @@ body {
 }
 
 h3 {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
 }
