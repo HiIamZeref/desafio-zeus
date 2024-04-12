@@ -11,7 +11,7 @@ import SettingsScreen from "./screens/SettingsScreen";
 // Tab names: serâo exibidos na parte inferior da tela
 const homeName = "Home";
 const detailsName = "Compras";
-const settingsName = "Configurações";
+const settingsName = "Ajustes";
 
 const Tab = createBottomTabNavigator();
 
@@ -21,11 +21,11 @@ export default function MainContainer() {
       <Tab.Navigator
         initialRouteName={homeName}
         screenOptions={({ route }) => ({
-          headerStyle: { backgroundColor: "#3a609b" },
-          headerTintColor: "#f0a30a",
-          tabBarStyle: styles.navBar,
-          tabBarActiveTintColor: "#f0a30a",
-          tabBarInactiveTintColor: "#B08633",
+          headerStyle: { backgroundColor: "#3a609b" }, // cor do header
+          headerTintColor: "#f0a30a", // cor do texto do header
+          tabBarStyle: styles.navBar, // cor da barra de navegação
+          tabBarActiveTintColor: "#f0a30a", // cor do ícone ativo
+          tabBarInactiveTintColor: "#B08633", // cor do ícone inativo
           tabBarIcon: ({ focused, color, size }) => {
             let iconName;
             let rn = route.name;
@@ -41,10 +41,6 @@ export default function MainContainer() {
             return <Ionicons name={iconName} size={size} color={color} />;
           },
         })}
-        // tabBarOptions={{
-        //   activeTintColor: "#f0a30a",
-        //   inactiveTintColor: "#B08633",
-        // }}
       >
         <Tab.Screen name={homeName} component={HomeScreen} />
         <Tab.Screen name={detailsName} component={DetailsScreen} />

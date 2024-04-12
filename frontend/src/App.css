@@ -1,6 +1,20 @@
 /* Set the background color to #007FFF */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 body {
   background-color: #3a609b;
+  font-family: "Roboto", sans-serif;
+}
+
+#root {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  padding: 1rem;
 }
 
 .grid-header {
