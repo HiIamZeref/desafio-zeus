@@ -1,4 +1,5 @@
 import {
+  Dimensions,
   Modal,
   Platform,
   Pressable,
@@ -11,12 +12,17 @@ import React from "react";
 import defaultStyles from "../../themes/styles";
 import { useState } from "react";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 export default function HomeScreen({ navigation }) {
+  // State Setup (dados principais)
   const [mediaMensal, setMediaMensal] = useState(100.25);
   const [mesAtual, setMesAtual] = useState(560.78);
 
-  // State Setup
+  // Arrow Setup
+  const arrowName = mesAtual <= 1000 ? "arrow-down" : "arrow-up";
+
+  // State Setup (dados modal)
   const [valorGasto, setValorGasto] = useState(200.0);
   const [quantidadeComprada, setQuantidadeComprada] = useState(10.0);
 
@@ -48,7 +54,7 @@ export default function HomeScreen({ navigation }) {
 
   function renderModal() {
     return (
-      <Modal animationType="slide" transparent={true} visible={modalVisible}>
+      <Modal animationType="fade" transparent={true} visible={modalVisible}>
         <View
           style={{
             ...defaultStyles.content,
@@ -106,15 +112,32 @@ export default function HomeScreen({ navigation }) {
             </View>
 
             {/* Submit Button */}
-            <Pressable
-              onPress={() => {
-                setModalVisible(false);
-                console.log("Modal fechou!");
-                handleInsert();
-              }}
-            >
-              <Text style={defaultStyles.insertPressable}>Enviar</Text>
-            </Pressable>
+            <View style={{ flexDirection: "row" }}>
+              <Pressable
+                onPress={() => {
+                  setModalVisible(false);
+                  console.log("Modal fechou!");
+                  handleInsert();
+                }}
+              >
+                <Text style={defaultStyles.insertPressable}>Registrar</Text>
+              </Pressable>
+              <Pressable
+                onPress={() => {
+                  setModalVisible(false);
+                  console.log("Modal fechou!");
+                }}
+              >
+                <Text
+                  style={{
+                    ...defaultStyles.insertPressable,
+                    backgroundColor: "#F00A91",
+                  }}
+                >
+                  Cancelar
+                </Text>
+              </Pressable>
+            </View>
           </View>
         </View>
       </Modal>
@@ -127,6 +150,7 @@ export default function HomeScreen({ navigation }) {
     console.log("Valor: ", valorGasto);
     console.log("Quantidade: ", quantidadeComprada);
   };
+  const sizeWidth = Dimensions.get("window").width;
 
   return (
     <View style={defaultStyles.mainView}>
@@ -141,15 +165,6 @@ export default function HomeScreen({ navigation }) {
           <Text style={defaultStyles.gastosText}>R$ {mediaMensal}</Text>
         </View>
 
-        {/* <Pressable
-          onPress={() => {
-            setModalVisible(true);
-            console.log("Abriu modal!");
-          }}
-        >
-          <Text style={defaultStyles.insertPressable}>Registrar Compra</Text>
-        </Pressable>
-        {renderModal()} */}
         <View style={defaultStyles.gastosContainer}>
           <View>
             <Text
@@ -165,6 +180,7 @@ export default function HomeScreen({ navigation }) {
               }}
             >
               R$ {mesAtual}
+              <Ionicons name={arrowName} style={{ fontSize: 33 }} />
             </Text>
           </View>
         </View>

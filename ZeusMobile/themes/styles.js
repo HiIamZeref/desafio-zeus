@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { Dimensions, StyleSheet } from "react-native";
 
 const defaultStyles = StyleSheet.create({
   mainView: {
@@ -65,7 +65,7 @@ const defaultStyles = StyleSheet.create({
     backgroundColor: "#3a609b",
     margin: 10,
     padding: 10,
-    width: "100%",
+    width: Dimensions.get("window").width * 0.9, // 90% da largura da tela
   },
   textoGastosContainer: {
     fontSize: 26,
