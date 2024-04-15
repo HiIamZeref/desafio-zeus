@@ -1,39 +1,38 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
+const express = require("express");
+const mongoose = require("mongoose");
+const cors = require("cors");
 const app = express();
 const PORT = 8080;
 
 // Conexão com o banco de dados
-mongoose.connect("mongodb+srv://felipegaby:12345@cluster0.tet07xv.mongodb.net/zeus")
+mongoose.connect(
+  "mongodb+srv://felipegaby:12345@cluster0.tet07xv.mongodb.net/zeus"
+);
 
 // Definição do schema e do model
-const DadosSchema = new mongoose.Schema({
+const DadosSchema = new mongoose.Schema(
+  {
     data: String,
     quantidade: Number,
-    dinheiro: Number
-}, { versionKey: false });
+    dinheiro: Number,
+  },
+  { versionKey: false }
+);
 
-const dadosModel = mongoose.model('dados', DadosSchema);
-
+const dadosModel = mongoose.model("dados", DadosSchema);
 
 // App setup
 app.use(express.json());
 app.use(cors());
-app.listen(
-    PORT,
-    () => console.log(`Servidor rodando na porta ${PORT}`)
-);
+app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
 
 // Rotas
 // Rota main
-app.get('/', (req, res) => {
-    console.log('Rota acessada!');
-    res.status(200).send({
-        'message': 'Hello World!'
-    });
-
-
+app.get("/", (req, res) => {
+  console.log("Rota acessada!");
+  res.status(200).send({
+    message: "Hello World!",
+  });
 });
 
 // Rota para inserção de um usuario novo
@@ -59,120 +58,109 @@ app.get('/', (req, res) => {
 // Arquitetura backend: MVC (procurar depois para implementar)
 // CRUD : Create, Read, Update, Delete
 
-
 // Rotas banco de dados
 // Rota para pegar todos os dados
-app.get('/dados', async (req, res) => {
-    console.log('Rota "/dados" alteracoes (GET) acessada!');
+app.get("/dados", async (req, res) => {
+  console.log('Rota "/dados" alteracoes (GET) acessada!');
 
-    try {
-        const data = await dadosModel.find({});
-        res.status(200).send(data);
-        console.log("Dados enviados com sucesso!");
-    } catch (err) {
-        res.status(500).send({
-            'status': 'error',
-            'message': err
-        });
+  try {
+    const data = await dadosModel.find({});
+    res.status(200).send(data);
+    console.log("Dados enviados com sucesso!");
+  } catch (err) {
+    res.status(500).send({
+      status: "error",
+      message: err,
+    });
 
-        console.log("Erro ao enviar dados!");
-    }
-
-
+    console.log("Erro ao enviar dados!");
+  }
 });
 
 // Rota para inserir um dado
-app.post('/dados', async (req, res) => {
-    console.log('Rota "/dados" (POST) acessada!');
+app.post("/dados", async (req, res) => {
+  console.log('Rota "/dados" (POST) acessada!');
 
-    const { data, quantidade, dinheiro } = req.body;
+  const { data, quantidade, dinheiro } = req.body;
 
-    if (!data || !quantidade || !dinheiro) {
-        res.status(418).send({
-            'status': 'error',
-            'message': 'Parametros faltando!'
-        });
-    }
+  if (!data || !quantidade || !dinheiro) {
+    res.status(418).send({
+      status: "error",
+      message: "Parametros faltando!",
+    });
+  }
 
-    try {
-        const dataObject = new dadosModel({ data, quantidade, dinheiro });
-        await dataObject.save();
-        res.status(201).send(dataObject);
-        console.log("Dado inserido com sucesso!");
-    } catch (err) {
-        res.status(500).send({
-            'status': 'error',
-            'message': err
-        });
+  try {
+    const dataObject = new dadosModel({ data, quantidade, dinheiro });
+    await dataObject.save();
+    res.status(201).send(dataObject);
+    console.log("Dado inserido com sucesso!");
+  } catch (err) {
+    res.status(500).send({
+      status: "error",
+      message: err,
+    });
 
-        console.log("Erro ao inserir dado!");
-        console.log(err.message + " errei");
-    }
-
+    console.log("Erro ao inserir dado!");
+    console.log(err.message + " errei");
+  }
 });
 
 // Rota para deletar um dado baseado no nome
-app.delete('/dados', async (req, res) => {
-    console.log('Rota "/dados" (DELETE) acessada!');
+app.delete("/dados", async (req, res) => {
+  console.log('Rota "/dados" (DELETE) acessada!');
 
-    const { nome } = req.body;
+  const { nome } = req.body;
 
-    if (!nome) {
-        res.status(418).send({
-            'status': 'error',
-            'message': 'Preciso de um nome de usuário!'
-        });
-    }
+  if (!nome) {
+    res.status(418).send({
+      status: "error",
+      message: "Preciso de um nome de usuário!",
+    });
+  }
 
-    try {
-        const data = await dadosModel.deleteOne({ nome });
-        [data.status, data.message] = ['OK', 'Dado deletado com sucesso!'];
+  try {
+    const data = await dadosModel.deleteOne({ nome });
+    [data.status, data.message] = ["OK", "Dado deletado com sucesso!"];
 
-        res.status(200).send(data);
-        console.log("Dado deletado com sucesso!");
-    } catch (err) {
-        res.status(500).send({
-            'status': 'error',
-            'message': err
-        });
+    res.status(200).send(data);
+    console.log("Dado deletado com sucesso!");
+  } catch (err) {
+    res.status(500).send({
+      status: "error",
+      message: err,
+    });
 
-        console.log("Erro ao deletar dado!");
-    }
-
+    console.log("Erro ao deletar dado!");
+  }
 });
 
 // Rota para atualizar um dado baseado no nome
-app.patch('/dados', async (req, res) => {
-    console.log("Rota '/dados' (POST) acessada!");
+app.patch("/dados", async (req, res) => {
+  console.log("Rota '/dados' (POST) acessada!");
 
-    const { nome } = req.body;
-    const { novoNome } = req.body;
+  const { nome } = req.body;
+  const { novoNome } = req.body;
 
-    if (!nome || !novoNome) {
-        res.status(418).send({
-            'status': 'error',
-            'message': 'Preciso de um nome de usuário e um novo nome!'
-        });
-    }
+  if (!nome || !novoNome) {
+    res.status(418).send({
+      status: "error",
+      message: "Preciso de um nome de usuário e um novo nome!",
+    });
+  }
 
-    try {
-        const data = await dadosModel.updateOne({ nome }, { nome: novoNome });
-        [data.status, data.message] = ['OK', 'Dado atualizado com sucesso!'];
+  try {
+    const data = await dadosModel.updateOne({ nome }, { nome: novoNome });
+    [data.status, data.message] = ["OK", "Dado atualizado com sucesso!"];
 
-        res.status(200).send(data);
-        console.log("Dado atualizado com sucesso!");
-    } catch (err) {
-        res.status(500).send({
-            'status': 'error',
-            'message': err
-        });
+    res.status(200).send(data);
+    console.log("Dado atualizado com sucesso!");
+  } catch (err) {
+    res.status(500).send({
+      status: "error",
+      message: err,
+    });
 
-        console.log("Erro ao atualizar dado!");
-    }
-
-
-
-
+    console.log("Erro ao atualizar dado!");
+  }
 });
-
-

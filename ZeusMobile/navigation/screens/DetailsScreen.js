@@ -23,11 +23,7 @@ export default function DetailsScreen({ navigation }) {
     <View style={defaultStyles.mainView}>
       <Text
         onPress={() => navigation.navigate("Home")}
-        style={{
-          color: "white",
-          fontSize: 26,
-          fontWeight: "bold",
-        }}
+        style={defaultStyles.mainText}
       >
         Gastos Mensais
       </Text>

@@ -17,7 +17,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 export default function HomeScreen({ navigation }) {
   // State Setup (dados principais)
   const [mediaMensal, setMediaMensal] = useState(100.25);
-  const [mesAtual, setMesAtual] = useState(560.78);
+  const [mesAtual, setMesAtual] = useState(500);
 
   // Arrow Setup
   const arrowName = mesAtual <= 1000 ? "arrow-down" : "arrow-up";
@@ -117,25 +117,25 @@ export default function HomeScreen({ navigation }) {
                 onPress={() => {
                   setModalVisible(false);
                   console.log("Modal fechou!");
-                  handleInsert();
-                }}
-              >
-                <Text style={defaultStyles.insertPressable}>Registrar</Text>
-              </Pressable>
-              <Pressable
-                onPress={() => {
-                  setModalVisible(false);
-                  console.log("Modal fechou!");
                 }}
               >
                 <Text
                   style={{
                     ...defaultStyles.insertPressable,
-                    backgroundColor: "#F00A91",
+                    backgroundColor: "#C53B29",
                   }}
                 >
                   Cancelar
                 </Text>
+              </Pressable>
+              <Pressable
+                onPress={() => {
+                  setModalVisible(false);
+                  console.log("Modal fechou!");
+                  handleInsert();
+                }}
+              >
+                <Text style={defaultStyles.insertPressable}>Registrar</Text>
               </Pressable>
             </View>
           </View>
@@ -173,15 +173,18 @@ export default function HomeScreen({ navigation }) {
             >
               Mês atual:
             </Text>
-            <Text
-              style={{
-                ...defaultStyles.gastosText,
-                color: mesAtual <= 1000 ? "#0AF081" : "#F00A91",
-              }}
-            >
-              R$ {mesAtual}
-              <Ionicons name={arrowName} style={{ fontSize: 33 }} />
-            </Text>
+            <View style={{ flexDirection: "row" }}>
+              <Text style={defaultStyles.gastosText}>R$ </Text>
+              <Text
+                style={{
+                  ...defaultStyles.gastosText,
+                  color: mesAtual <= 1000 ? "#29C478" : "#C53B29",
+                }}
+              >
+                {mesAtual}
+                {/* <Ionicons name={arrowName} style={{ fontSize: 33 }} /> */}
+              </Text>
+            </View>
           </View>
         </View>
 

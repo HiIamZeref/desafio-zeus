@@ -8,7 +8,7 @@ export default function SettingsScreen({ navigation }) {
     <View style={defaultStyles.mainView}>
       <Text
         onPress={() => navigation.navigate("Home")}
-        style={{ fontSize: 26, fontWeight: "bold", color: "white" }}
+        style={defaultStyles.mainText}
       >
         Ajustes
       </Text>

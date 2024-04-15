@@ -23,6 +23,7 @@ export default function MainContainer() {
         screenOptions={({ route }) => ({
           headerStyle: { backgroundColor: "#3a609b" }, // cor do header
           headerTintColor: "#f0a30a", // cor do texto do header
+          headerTitleAlign: "center", // alinhamento do texto do header
           tabBarStyle: styles.navBar, // cor da barra de navegação
           tabBarActiveTintColor: "#f0a30a", // cor do ícone ativo
           tabBarInactiveTintColor: "#B08633", // cor do ícone inativo

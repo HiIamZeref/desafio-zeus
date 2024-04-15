@@ -1,6 +1,6 @@
 import axios from "axios";
 
-interface Dados {
+interface Gastos {
   data: string;
   quantidade: number;
   dinheiro: number;
@@ -10,27 +10,27 @@ const api = axios.create({
   baseURL: "http://localhost:8080",
 });
 
-export const getDados = async function () {
+export const getGastos = async function () {
   return await api
-    .get("/dados")
+    .get("/gastos")
     .then((response) => {
       return response.data;
     })
     .catch((error) => {
-      throw new Error(`Erro ao buscar dados: ${error}`);
+      throw new Error(`Erro ao buscar gastos: ${error}`);
     });
 };
 
-export const postDados = async function (dados: Dados) {
-  console.log("Dados recebidos:" + dados);
+export const postGastos = async function (gastos: Gastos) {
+  console.log("Gastos recebidos:" + gastos);
   return await api
-    .post("/dados", dados)
+    .post("/gastos", gastos)
     .then((response) => {
-      console.log("Dados postados");
+      console.log("Gastos postados");
       console.log(response.data);
       // return response.data;
     })
     .catch((error) => {
-      throw new Error(`Erro ao postar dados: ${error}`);
+      throw new Error(`Erro ao postar gastos: ${error}`);
     });
 };

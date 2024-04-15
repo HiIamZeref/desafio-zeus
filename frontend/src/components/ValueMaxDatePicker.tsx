@@ -4,16 +4,14 @@ import customParseFormat from "dayjs/plugin/customParseFormat";
 
 dayjs.extend(customParseFormat);
 
-const dateFormat = "YYYY-MM-DD";
+const dateFormat = "DD/MM/YYYY";
 
 interface ValueMaxDatePickerProps {
-  maxDate: string;
   value: string;
   onChange?: (value: string) => void;
 }
 
 export const ValueMaxDatePicker = ({
-  maxDate,
   value,
   onChange,
 }: ValueMaxDatePickerProps) => {
@@ -24,8 +22,9 @@ export const ValueMaxDatePicker = ({
   };
   return (
     <DatePicker
-      minDate={dayjs("2020-01-01", dateFormat)}
-      maxDate={dayjs(maxDate, dateFormat)}
+      format={dateFormat}
+      minDate={dayjs("01/01/2020", dateFormat)}
+      maxDate={dayjs()}
       size="large"
       value={dayjs(value, dateFormat)}
       onChange={(date) => handleDateChange(date.format(dateFormat))}

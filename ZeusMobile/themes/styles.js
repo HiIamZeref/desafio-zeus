@@ -5,7 +5,7 @@ const defaultStyles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#9B7A3A",
+    backgroundColor: "#F6F6F6",
   },
   content: {
     flex: 1,
@@ -76,6 +76,7 @@ const defaultStyles = StyleSheet.create({
     fontSize: 40,
     color: "white",
   },
+  mainText: { fontSize: 26, fontWeight: "bold", color: "#f0a30a" },
 });
 
 export default defaultStyles;

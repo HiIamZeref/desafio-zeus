@@ -4,7 +4,7 @@ import theme from "../../styles/theme/default";
 import { MyDataGrid } from "../../components/MyDataGrid";
 import { Button } from "@mui/material";
 import { useEffect, useState } from "react";
-import { getDados, postDados } from "../../services/Api";
+import { getGastos, postGastos } from "../../services/Api";
 import Grid from "@mui/material/Unstable_Grid2";
 import { ObjectId } from "mongoose";
 import { InputNumber, Statistic } from "antd";
@@ -23,10 +23,9 @@ dayjs.extend(customParseFormat);
 
 function CadastroPage() {
   // Gerando a data atual
-  const formattedDate = dayjs().format("YYYY-MM-DD");
   const [rows, setRows] = useState<Row[]>([]);
 
-  const [data, setData] = useState(formattedDate);
+  const [data, setData] = useState(dayjs().format("DD/MM/YYYY"));
   const [quantidadeRacao, setQuantidadeRacao] = useState(10);
   const [valorRacao, setValorRacao] = useState(100);
 
@@ -47,13 +46,13 @@ function CadastroPage() {
     console.log(postObject);
 
     // Enviando os dados para o backend
-    postDados(postObject).then(() => {
+    postGastos(postObject).then(() => {
       atualizarTabela();
     });
   };
 
   const atualizarTabela = function () {
-    getDados()
+    getGastos()
       .then((data: Row[]) => {
         console.log(data);
         // Formatando os dados para a tabela
@@ -79,9 +78,8 @@ function CadastroPage() {
 
             <ValueMaxDatePicker
               value={data}
-              maxDate={data}
-              onChange={() => {
-                setData(data);
+              onChange={(newData) => {
+                setData(newData);
               }}
             />
 
