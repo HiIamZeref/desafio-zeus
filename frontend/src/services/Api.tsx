@@ -34,3 +34,27 @@ export const postGastos = async function (gastos: Gastos) {
       throw new Error(`Erro ao postar gastos: ${error}`);
     });
 };
+
+export const getGastosMesAtual = async function () {
+  return await api
+    .get("/gastosMesAtual")
+    .then((response) => {
+      console.log("Gastos mes atual recebidos");
+      return response.data;
+    })
+    .catch((error) => {
+      throw new Error(`Erro ao buscar gastos: ${error}`);
+    });
+};
+
+export const getDefaultValues = async function () {
+  return await api
+    .get("/defaultValues")
+    .then((response) => {
+      console.log("Dados default recebidos");
+      return response.data;
+    })
+    .catch((error) => {
+      throw new Error(`Erro ao buscar dados default: ${error}`);
+    });
+};

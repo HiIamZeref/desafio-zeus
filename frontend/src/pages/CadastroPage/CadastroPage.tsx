@@ -4,7 +4,12 @@ import theme from "../../styles/theme/default";
 import { MyDataGrid } from "../../components/MyDataGrid";
 import { Button } from "@mui/material";
 import { useEffect, useState } from "react";
-import { getGastos, postGastos } from "../../services/Api";
+import {
+  getGastos,
+  postGastos,
+  getGastosMesAtual,
+  getDefaultValues,
+} from "../../services/Api";
 import Grid from "@mui/material/Unstable_Grid2";
 import { ObjectId } from "mongoose";
 import { InputNumber, Statistic } from "antd";
@@ -21,17 +26,30 @@ interface Row {
 }
 dayjs.extend(customParseFormat);
 
-function CadastroPage() {
-  // Gerando a data atual
-  const [rows, setRows] = useState<Row[]>([]);
+interface DefaultValues {
+  quantidadeDefault: number;
+  dinheiroDefault: number;
+  metaGastoMensal: number;
+}
 
-  const [data, setData] = useState(dayjs().format("DD/MM/YYYY"));
+function CadastroPage() {
+  // Gerando gasto mensal e meta de gastos
+  const [gastoMesAtual, setGastoMesAtual] = useState(0);
+
+  // Gerando valores default (metaGastos, data, quantidadeRacao)
+  const [metaGastos, setMetaGastos] = useState(10);
   const [quantidadeRacao, setQuantidadeRacao] = useState(10);
   const [valorRacao, setValorRacao] = useState(100);
+
+  // Gerando a data atual
+  const [rows, setRows] = useState<Row[]>([]);
+  const [data, setData] = useState(dayjs().format("DD/MM/YYYY"));
 
   // Pegar informações do backend
   useEffect(() => {
     atualizarTabela();
+    atualizarGastoMesAtual();
+    atualizarDadosDefault();
   }, []);
 
   const onClickSubmit = () => {
@@ -69,67 +87,169 @@ function CadastroPage() {
       });
   };
 
+  const atualizarGastoMesAtual = function () {
+    getGastosMesAtual()
+      .then((data) => {
+        setGastoMesAtual(data.gastoMensalAtual);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  const atualizarDadosDefault = function () {
+    getDefaultValues()
+      .then((data: DefaultValues[]) => {
+        const { quantidadeDefault, dinheiroDefault, metaGastoMensal } = data[0];
+        console.log(quantidadeDefault);
+        setMetaGastos(metaGastoMensal);
+        setQuantidadeRacao(quantidadeDefault);
+        setValorRacao(dinheiroDefault);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <Container>
-        <Grid container spacing={2}>
-          <Grid xs={12} sm={6} lg={6} className="text-field-container">
-            <h3>Data da compra:</h3>
-
-            <ValueMaxDatePicker
-              value={data}
-              onChange={(newData) => {
-                setData(newData);
-              }}
-            />
-
-            <h3>Quantidade comprada:</h3>
-            <InputNumber
-              id="quantidadeRacao"
-              size="large"
-              style={{ width: "100%" }}
-              value={quantidadeRacao}
-              onChange={(value) => {
-                if (value !== null) {
-                  setQuantidadeRacao(value);
-                }
-              }}
-              suffix="kg"
-              min={1}
-              max={999.99}
-            />
-            <h3>Valor gasto: </h3>
-            <InputNumber
-              id="valorRacao"
-              size="large"
-              style={{ width: "100%" }}
-              value={valorRacao}
-              prefix="R$"
-              min={1}
-              max={9999.99}
-              onChange={(value) => {
-                if (value !== null) {
-                  setValorRacao(value);
-                }
-              }}
-            />
-            <Button
-              className="default-btn"
-              variant="contained"
-              size="large"
-              style={{ display: "block", color: "" }}
-              onClick={onClickSubmit}
+        <Grid container spacing={2} justifyContent="center" alignItems="center">
+          <Grid xs={12} sm={12} lg={12} textAlign="center">
+            <Grid
+              container
+              justifyContent="center"
+              alignItems="center"
+              gap={"1rem"}
             >
-              Salvar dados
-            </Button>
+              <Grid
+                xs={12}
+                sm={6}
+                justifyContent={"center"}
+                alignItems={"center"}
+              >
+                <Statistic
+                  title="Total gasto nesse mês"
+                  value={gastoMesAtual}
+                  precision={2}
+                  decimalSeparator=","
+                  prefix="R$"
+                  groupSeparator="."
+                />
+              </Grid>
+              <Grid xs={12} sm={6}>
+                <Statistic
+                  title="Meta de gastos"
+                  value={metaGastos}
+                  precision={2}
+                  decimalSeparator=","
+                  groupSeparator="."
+                  prefix="R$"
+                />
+              </Grid>
+            </Grid>
           </Grid>
-          <Grid xs={12} sm={6} lg={6}>
-            <Statistic
-              title="Total gasto nesse mês"
-              value={100}
-              precision={2}
-              decimalSeparator=","
-            />
+          <Grid
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "center",
+              gap: "1rem",
+            }}
+          >
+            <Grid
+              container
+              spacing={1}
+              alignItems={"center"}
+              justifyContent={"center"}
+            >
+              <Grid xs={12} sm={2}>
+                <div>
+                  <h3>Data da compra:</h3>
+                  <ValueMaxDatePicker
+                    style={{ width: "100%" }}
+                    value={data}
+                    onChange={(newData) => {
+                      setData(newData);
+                    }}
+                  />
+                </div>
+              </Grid>
+
+              <Grid xs={12} sm={2}>
+                <div>
+                  <h3>Quantidade comprada:</h3>
+                  <InputNumber
+                    id="quantidadeRacao"
+                    size="large"
+                    value={quantidadeRacao}
+                    onChange={(value) => {
+                      if (value !== null) {
+                        setQuantidadeRacao(value);
+                      }
+                    }}
+                    suffix="kg"
+                    min={1}
+                    max={999.99}
+                    style={{ width: "100%" }}
+                  />
+                </div>
+              </Grid>
+              <Grid xs={12} sm={2}>
+                <div>
+                  <h3>Valor gasto: </h3>
+                  <InputNumber
+                    id="valorRacao"
+                    size="large"
+                    value={valorRacao}
+                    prefix="R$"
+                    min={1}
+                    max={9999.99}
+                    onChange={(value) => {
+                      if (value !== null) {
+                        setValorRacao(value);
+                      }
+                    }}
+                    style={{ width: "100%" }}
+                  />
+                </div>
+              </Grid>
+              <Grid xs={12} sm={2}>
+                <Button
+                  className="default-btn"
+                  variant="contained"
+                  size="large"
+                  style={{ display: "block", color: "" }}
+                  onClick={onClickSubmit}
+                >
+                  Salvar dados
+                </Button>
+              </Grid>
+              <Grid xs={12} sm={2}>
+                <Button
+                  className="default-btn"
+                  variant="contained"
+                  size="large"
+                  style={{ display: "block", color: "" }}
+                  onClick={atualizarTabela}
+                >
+                  Atualizar tabela
+                </Button>
+              </Grid>
+              <Grid xs={12} sm={2}>
+                <Button
+                  className="default-btn"
+                  variant="contained"
+                  size="large"
+                  style={{ display: "block", color: "" }}
+                  onClick={atualizarTabela}
+                >
+                  Entrada Padrão
+                </Button>
+              </Grid>
+            </Grid>
+          </Grid>
+          <Grid xs={12} sm={10}>
             <MyDataGrid rows={rows} headerClassName="grid-header" />
           </Grid>
         </Grid>

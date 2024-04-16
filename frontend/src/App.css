@@ -25,7 +25,7 @@ body {
 
 .text-field-container {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 10px; /* Adjust gap for spacing between elements */
 }
 

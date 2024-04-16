@@ -1,6 +1,6 @@
 import { mongoose } from "../database/db.js";
 
-const GastosModel = new mongoose.Schema(
+const GastosSchema = new mongoose.Schema(
   {
     data: String,
     quantidade: Number,
@@ -9,7 +9,7 @@ const GastosModel = new mongoose.Schema(
   { versionKey: false }
 );
 
-const gastosModel = mongoose.model("dados", GastosModel);
+const gastosModel = mongoose.model("dados", GastosSchema);
 
 export { gastosModel };
 // Path: models/gastoModel.js

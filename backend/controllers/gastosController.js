@@ -6,6 +6,7 @@ const getGastos = async function (req, res) {
   try {
     const allGastos = await gastosModel.find();
     res.status(200).send(allGastos);
+    console.log(allGastos);
     console.log("Gastos gotten and sent!");
   } catch (error) {
     console.log("Error getting gastos");
@@ -13,6 +14,7 @@ const getGastos = async function (req, res) {
     res.status(500).send({ status: "error", message: error });
   }
 };
+
 const postGastos = async function (req, res) {
   console.log("Posting gastos");
   const { data, quantidade, dinheiro } = req.body;
@@ -36,6 +38,7 @@ const postGastos = async function (req, res) {
     });
   }
 };
+
 const deleteGastos = async function (req, res) {
   console.log("Deleting gastos entry...");
   const { _id } = req.body;
@@ -62,6 +65,7 @@ const deleteGastos = async function (req, res) {
     });
   }
 };
+
 const updateGastos = async function (req, res) {
   console.log("Updating gastos entry...");
   const { _id, newData, newQuantidade, newDinheiro } = req.body;

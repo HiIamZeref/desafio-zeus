@@ -7,15 +7,15 @@ function RouterApp() {
   const router = createBrowserRouter([
     {
       path: "/",
-      // element: <CadastroPage />,
+
       children: [
         {
           path: "",
           element: <CadastroPage />,
         },
         {
-          path: "admin",
-          element: <div>Tela de Admin Especial</div>,
+          path: "new",
+          element: <h1>Eu tentei fazer uma nova página</h1>,
         },
       ],
       errorElement: <ErrorPage />,

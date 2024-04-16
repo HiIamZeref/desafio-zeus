@@ -7,6 +7,10 @@ import {
   getGastosMesAtual,
   getGastosMesTotal,
 } from "../controllers/gastosController.js";
+import {
+  getDefaultValues,
+  updateDefaultValues,
+} from "../controllers/defaultValuesController.js";
 
 const router = Router();
 
@@ -17,8 +21,8 @@ router.delete("/gastos", deleteGastos);
 router.patch("/gastos", updateGastos);
 
 // Rotas valores default
-// router.get("/defaultValues", getValoresDefault);
-// router.patch("/defaultValues", updateValoresDefault);
+router.get("/defaultValues", getDefaultValues);
+router.patch("/defaultValues", updateDefaultValues);
 
 // Rotas gastos mensais
 router.get("/gastosMesAtual", getGastosMesAtual);

@@ -1,5 +1,6 @@
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { ObjectId } from "mongoose";
+import { Button } from "@mui/material";
 
 interface Row {
   _id: ObjectId;
@@ -17,13 +18,13 @@ export const MyDataGrid = ({ rows, headerClassName }: MyDataGridProps) => {
   const columns: GridColDef<(typeof rows)[number]>[] = [
     {
       field: "data",
-      headerName: "Data (YYYY-MM-DD)",
+      headerName: "Data",
       width: 200,
       headerClassName: headerClassName,
     },
     {
       field: "quantidade",
-      headerName: "Quantidade (Kg)",
+      headerName: "Quantidade (kg)",
       width: 200,
       headerClassName: headerClassName,
     },
@@ -32,6 +33,52 @@ export const MyDataGrid = ({ rows, headerClassName }: MyDataGridProps) => {
       headerName: "Dinheiro (R$)",
       width: 200,
       headerClassName: headerClassName,
+    },
+    {
+      field: "editar",
+      headerName: "Editar",
+      width: 200,
+      headerClassName: headerClassName,
+      renderCell: (params) => (
+        <strong>
+          <Button
+            variant="text"
+            size="small"
+            onClick={() => {
+              // Implemente a lógica de exclusão aqui
+              //params.row.quantidade
+              console.log("Editando parametros...");
+              console.log(params.row.data);
+              console.log(params.row.quantidade);
+              console.log(params.row._id);
+            }}
+          >
+            Editar
+          </Button>
+        </strong>
+      ),
+    },
+    {
+      field: "deletar",
+      headerName: "Deletar",
+      width: 200,
+      headerClassName: headerClassName,
+      renderCell: (params) => (
+        <strong>
+          <Button
+            variant="text"
+            size="small"
+            onClick={() => {
+              console.log("Deletando parametros...");
+              console.log(params.row.data);
+              console.log(params.row.quantidade);
+              console.log(params.row._id);
+            }}
+          >
+            Deletar
+          </Button>
+        </strong>
+      ),
     },
   ];
 

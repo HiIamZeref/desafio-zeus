@@ -9,11 +9,13 @@ const dateFormat = "DD/MM/YYYY";
 interface ValueMaxDatePickerProps {
   value: string;
   onChange?: (value: string) => void;
+  style?: React.CSSProperties;
 }
 
 export const ValueMaxDatePicker = ({
   value,
   onChange,
+  style,
 }: ValueMaxDatePickerProps) => {
   const handleDateChange = (value: string) => {
     if (onChange) {
@@ -22,6 +24,7 @@ export const ValueMaxDatePicker = ({
   };
   return (
     <DatePicker
+      style={style}
       format={dateFormat}
       minDate={dayjs("01/01/2020", dateFormat)}
       maxDate={dayjs()}
