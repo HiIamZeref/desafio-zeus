@@ -11,8 +11,8 @@ import {
   getDefaultValues,
 } from "../../services/Api";
 import Grid from "@mui/material/Unstable_Grid2";
-import { ObjectId } from "mongoose";
-import { InputNumber, Statistic } from "antd";
+import { ObjectId, set } from "mongoose";
+import { InputNumber, Modal, Statistic } from "antd";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { ValueMaxDatePicker } from "../../components/ValueMaxDatePicker";
@@ -44,6 +44,11 @@ function CadastroPage() {
   // Gerando a data atual
   const [rows, setRows] = useState<Row[]>([]);
   const [data, setData] = useState(dayjs().format("DD/MM/YYYY"));
+
+  //State modal editar valores
+  const [modalEditarValores, setModalEditarValores] = useState(false);
+  const showModalEditarValores = () => setModalEditarValores(true);
+  const hideModalEditarValores = () => setModalEditarValores(false);
 
   // Pegar informações do backend
   useEffect(() => {
@@ -253,6 +258,7 @@ function CadastroPage() {
             <MyDataGrid rows={rows} headerClassName="grid-header" />
           </Grid>
         </Grid>
+        <Modal title="Modal teste"></Modal>
       </Container>
     </ThemeProvider>
   );
