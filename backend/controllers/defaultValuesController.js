@@ -14,22 +14,30 @@ const getDefaultValues = async function (req, res) {
 };
 
 const updateDefaultValues = async function (req, res) {
-  console.log("Updatig default values...");
-  const { newQuantidadeDefault, newDinheiroDefault } = req.body;
-  if (!newQuantidadeDefault || !newDinheiroDefault) {
-    res.status(418).send({
+  console.log("Updating default values...");
+  const { newQuantidadeDefault, newDinheiroDefault, newMetaGastoMensal } =
+    req.body;
+  if (!newQuantidadeDefault || !newDinheiroDefault || !newMetaGastoMensal) {
+    console.log("Parametros faltando!");
+    return res.status(418).send({
       status: "error",
       message: "Parametros faltando!",
     });
   }
-
+  console.log(newQuantidadeDefault, newDinheiroDefault, newMetaGastoMensal);
   try {
-    const defaultValues = await defaultValuesModel.find();
-    defaultValues[0].quantidadeDefault = newQuantidadeDefault;
-    defaultValues[0].dinheiroDefault = newDinheiroDefault;
-    await defaultValues[0].save();
-    res.status(200).send(defaultValues);
+    const response = await defaultValuesModel.findOneAndUpdate(
+      {},
+      {
+        quantidadeDefault: newQuantidadeDefault,
+        dinheiroDefault: newDinheiroDefault,
+        metaGastoMensal: newMetaGastoMensal,
+      }
+    );
     console.log("Default values updated!");
+    const updatedDefaultValues = await defaultValuesModel.find();
+
+    res.status(200).send(updatedDefaultValues);
   } catch (error) {
     console.log("Error updating default values");
     console.log(error);

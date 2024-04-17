@@ -2,6 +2,7 @@ import { mongoose } from "../database/db.js";
 
 const DefaultValuesSchema = new mongoose.Schema(
   {
+    metaGastoMensal: Number,
     quantidadeDefault: Number,
     dinheiroDefault: Number,
   },

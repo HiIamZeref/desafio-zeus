@@ -14,7 +14,7 @@ const calcGastoAtual = (gastosList) => {
     const gastoMes = Number(gasto.data.split("/")[1]);
 
     if (gastoMes === currentMonth) {
-      total += gasto.quantidade * gasto.dinheiro;
+      total += gasto.dinheiro;
     }
   });
 

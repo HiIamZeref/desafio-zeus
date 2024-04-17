@@ -1,5 +1,6 @@
 import { gastosModel } from "../models/gastosModel.js";
 import { calcGastoAtual, calcGastoMensalTotal } from "../services/utils.js";
+import { ObjectId } from "mongodb";
 
 const getGastos = async function (req, res) {
   console.log("Getting gastos");
@@ -26,12 +27,18 @@ const postGastos = async function (req, res) {
   }
 
   try {
-    const gastosObject = new gastosModel({ data, quantidade, dinheiro });
+    const gastosObject = new gastosModel({
+      _id: new ObjectId(),
+      data,
+      quantidade,
+      dinheiro,
+    });
     await gastosObject.save();
     res.status(201).send(gastosObject);
     console.log("Gasto inserido com sucesso!");
   } catch (err) {
     console.log("Erro ao inserir gasto!");
+    console.log(err);
     res.status(500).send({
       status: "error",
       message: err,
@@ -42,20 +49,18 @@ const postGastos = async function (req, res) {
 const deleteGastos = async function (req, res) {
   console.log("Deleting gastos entry...");
   const { _id } = req.body;
-
   if (!_id) {
     res.status(418).send({
       status: "error",
-      message: "Preciso de um id para deletar!",
+      message: "Parametros faltando!",
     });
   }
-
+  console.log("_id: ", _id);
   try {
-    const data = await gastosModel.deleteOne({ _id });
-    [data.status, data.message] = ["OK", "Dado deletado com sucesso!"];
-
+    const response = await gastosModel.findByIdAndDelete(_id);
+    console.log(response);
+    res.status(200).send(response);
     console.log("Gasto deletado com sucesso!");
-    res.status(200).send(data);
   } catch (error) {
     console.log("Erro ao deletar gasto!");
     console.log(error);
@@ -68,7 +73,12 @@ const deleteGastos = async function (req, res) {
 
 const updateGastos = async function (req, res) {
   console.log("Updating gastos entry...");
-  const { _id, newData, newQuantidade, newDinheiro } = req.body;
+  const {
+    _id,
+    data: newData,
+    quantidade: newQuantidade,
+    dinheiro: newDinheiro,
+  } = req.body;
 
   if (!_id || !newData || !newQuantidade || !newDinheiro) {
     res.status(418).send({
@@ -76,14 +86,19 @@ const updateGastos = async function (req, res) {
       message: "Parametros faltando!",
     });
   }
+  const filter = { _id: _id };
+  const update = {
+    data: newData,
+    quantidade: newQuantidade,
+    dinheiro: newDinheiro,
+  };
+
   try {
-    const data = await gastosModel.updateOne(
-      { _id },
-      { data: newData, quantidade: newQuantidade, dinheiro: newDinheiro }
-    );
-    [data.status, data.message] = ["OK", "Dado atualizado com sucesso!"];
+    console.log(filter, update);
+    const updatedGasto = await gastosModel.findByIdAndUpdate(_id, update);
+    console.log(updatedGasto);
+    res.status(200).send(updatedGasto);
     console.log("Gasto atualizado com sucesso!");
-    res.status(200).send(data);
   } catch (error) {
     console.log("Erro ao atualizar gasto!");
     console.log(error);
@@ -100,6 +115,7 @@ const getGastosMesAtual = async function (req, res) {
   try {
     const allGastos = await gastosModel.find();
     const gastoAtual = calcGastoAtual(allGastos);
+    console.log("Gasto atual: ", gastoAtual);
 
     console.log("Gastos mes atual gotten and sent!");
     res.status(200).send({ gastoMensalAtual: gastoAtual });

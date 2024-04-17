@@ -9,9 +9,10 @@ import {
   postGastos,
   getGastosMesAtual,
   getDefaultValues,
+  patchDefaultValues,
 } from "../../services/Api";
 import Grid from "@mui/material/Unstable_Grid2";
-import { ObjectId, set } from "mongoose";
+import { ObjectId } from "mongoose";
 import { InputNumber, Modal, Statistic } from "antd";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
@@ -37,7 +38,11 @@ function CadastroPage() {
   const [gastoMesAtual, setGastoMesAtual] = useState(0);
 
   // Gerando valores default (metaGastos, data, quantidadeRacao)
-  const [metaGastos, setMetaGastos] = useState(10);
+  const [metaGastosDefault, setMetaGastosDefault] = useState(0);
+  const [racaoDefault, setRacaoDefault] = useState(0);
+  const [valorDefault, setValorDefault] = useState(0);
+
+  const [metaGastos, setMetaGastos] = useState(0);
   const [quantidadeRacao, setQuantidadeRacao] = useState(10);
   const [valorRacao, setValorRacao] = useState(100);
 
@@ -71,6 +76,23 @@ function CadastroPage() {
     // Enviando os dados para o backend
     postGastos(postObject).then(() => {
       atualizarTabela();
+      atualizarGastoMesAtual();
+    });
+  };
+
+  const onClickEditarValores = () => {
+    console.log("Clico no botão de editar valores");
+
+    const postObject = {
+      newQuantidadeDefault: racaoDefault,
+      newDinheiroDefault: valorDefault,
+      newMetaGastoMensal: metaGastosDefault,
+    };
+
+    patchDefaultValues(postObject).then(() => {
+      atualizarDadosDefault();
+      hideModalEditarValores();
+      atualizarGastoMesAtual();
     });
   };
 
@@ -95,6 +117,8 @@ function CadastroPage() {
   const atualizarGastoMesAtual = function () {
     getGastosMesAtual()
       .then((data) => {
+        console.log("Gasto mensal atual:");
+        console.log(data.gastoMensalAtual);
         setGastoMesAtual(data.gastoMensalAtual);
       })
       .catch((error) => {
@@ -106,10 +130,13 @@ function CadastroPage() {
     getDefaultValues()
       .then((data: DefaultValues[]) => {
         const { quantidadeDefault, dinheiroDefault, metaGastoMensal } = data[0];
-        console.log(quantidadeDefault);
+        setRacaoDefault(quantidadeDefault);
+        setValorDefault(dinheiroDefault);
         setMetaGastos(metaGastoMensal);
+
         setQuantidadeRacao(quantidadeDefault);
         setValorRacao(dinheiroDefault);
+        setMetaGastosDefault(metaGastoMensal);
       })
       .catch((error) => {
         console.error(error);
@@ -247,7 +274,7 @@ function CadastroPage() {
                   variant="contained"
                   size="large"
                   style={{ display: "block", color: "" }}
-                  onClick={atualizarTabela}
+                  onClick={showModalEditarValores}
                 >
                   Entrada Padrão
                 </Button>
@@ -258,7 +285,64 @@ function CadastroPage() {
             <MyDataGrid rows={rows} headerClassName="grid-header" />
           </Grid>
         </Grid>
-        <Modal title="Modal teste"></Modal>
+        {/* Modal para editar valores padrão */}
+        <Modal
+          title="Editar valores padrão"
+          open={modalEditarValores}
+          onOk={onClickEditarValores}
+          okText="Salvar"
+          okButtonProps={{
+            style: { backgroundColor: "#00a152", color: "white" },
+          }}
+          onCancel={hideModalEditarValores}
+          cancelText="Cancelar"
+          cancelButtonProps={{
+            style: { backgroundColor: "red", color: "white" },
+          }}
+        >
+          <h3>Meta de gastos:</h3>
+          <InputNumber
+            size="large"
+            value={metaGastosDefault}
+            onChange={(value) => {
+              if (value !== null) {
+                setMetaGastosDefault(value);
+              }
+            }}
+            prefix="R$"
+            min={1}
+            max={9999.99}
+            style={{ width: "100%" }}
+          />
+          <h3>Quantidade comprada padrão:</h3>
+          <InputNumber
+            size="large"
+            value={racaoDefault}
+            onChange={(value) => {
+              if (value !== null) {
+                setRacaoDefault(value);
+              }
+            }}
+            suffix="kg"
+            min={1}
+            max={999.99}
+            style={{ width: "100%" }}
+          />
+          <h3>Valor gasto padrão:</h3>
+          <InputNumber
+            size="large"
+            value={valorDefault}
+            prefix="R$"
+            min={1}
+            max={9999.99}
+            onChange={(value) => {
+              if (value !== null) {
+                setValorDefault(value);
+              }
+            }}
+            style={{ width: "100%" }}
+          />
+        </Modal>
       </Container>
     </ThemeProvider>
   );
