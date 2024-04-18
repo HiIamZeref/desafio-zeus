@@ -13,10 +13,6 @@ function RouterApp() {
           path: "",
           element: <CadastroPage />,
         },
-        {
-          path: "new",
-          element: <h1>Eu tentei fazer uma nova página</h1>,
-        },
       ],
       errorElement: <ErrorPage />,
     },

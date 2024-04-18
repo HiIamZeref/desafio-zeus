@@ -6,6 +6,11 @@ interface Gastos {
   quantidade: number;
   dinheiro: number;
 }
+interface NewGastos {
+  data: string;
+  quantidade: number;
+  dinheiro: number;
+}
 
 const api = axios.create({
   baseURL: "http://localhost:8080",
@@ -22,7 +27,7 @@ export const getGastos = async function () {
     });
 };
 
-export const postGastos = async function (gastos: Gastos) {
+export const postGastos = async function (gastos: NewGastos) {
   console.log("Gastos recebidos:" + gastos);
   return await api
     .post("/gastos", gastos)
@@ -36,10 +41,10 @@ export const postGastos = async function (gastos: Gastos) {
     });
 };
 
-export const deleteGastos = async function (gastos) {
-  console.log("Gastos recebidos:" + gastos);
+export const deleteGastos = async function (id) {
+  console.log(id, "id");
   return await api
-    .delete("/gastos", gastos)
+    .delete("/gastos", { data: { _id: id } })
     .then((response) => {
       console.log("Gastos deletados");
       console.log(response.data);

@@ -48,6 +48,7 @@ const postGastos = async function (req, res) {
 
 const deleteGastos = async function (req, res) {
   console.log("Deleting gastos entry...");
+  console.log(req.body);
   const { _id } = req.body;
   if (!_id) {
     res.status(418).send({

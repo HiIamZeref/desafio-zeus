@@ -2,9 +2,13 @@ import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { ObjectId } from "mongoose";
 import { Button, Container } from "@mui/material";
 import { InputNumber, Modal } from "antd";
-import { useState } from "react";
+import { useState, forceUpdate } from "react";
 import { ValueMaxDatePicker } from "./ValueMaxDatePicker";
 import { patchGastos, deleteGastos } from "@/services/Api";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface Row {
   _id: ObjectId;
@@ -31,6 +35,19 @@ export const MyDataGrid = ({
     dinheiro: 0,
     _id: "",
   });
+
+  //Toast setup
+  const notify = (mensagem: string) =>
+    toast.success(mensagem, {
+      position: "top-center",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
 
   // Setup modais de edição e exclusão
   const [modalEditar, setModalEditar] = useState(false);
@@ -77,7 +94,6 @@ export const MyDataGrid = ({
       renderCell: (params) => (
         <strong>
           <Button
-            variant="text"
             size="small"
             onClick={() => {
               setCurrentParams({
@@ -87,10 +103,11 @@ export const MyDataGrid = ({
                 _id: params.row._id.toString(),
               });
               console.log("Editando parametros...");
+              console.log(currentParams);
               showModalEditar();
             }}
           >
-            Editar
+            <EditIcon />
           </Button>
         </strong>
       ),
@@ -106,6 +123,7 @@ export const MyDataGrid = ({
             variant="text"
             size="small"
             onClick={() => {
+              console.log(currentParams);
               setCurrentParams({
                 data: params.row.data,
                 quantidade: params.row.quantidade,
@@ -117,7 +135,7 @@ export const MyDataGrid = ({
               showModalDeletar();
             }}
           >
-            Deletar
+            <DeleteIcon />
           </Button>
         </strong>
       ),
@@ -126,32 +144,17 @@ export const MyDataGrid = ({
 
   const handleEditarEntrada = function () {
     console.log("Editando entrada...");
+    console.log("CurrentParams: ", currentParams);
     patchGastos(currentParams);
     hideModalEditar();
-
-    const updatedRows = rows.map((row) => {
-      if (row._id.toString() === currentParams._id) {
-        return {
-          ...row,
-          data: currentParams.data,
-          quantidade: currentParams.quantidade,
-          dinheiro: currentParams.dinheiro,
-        };
-      } else {
-        return row;
-      }
-    });
-
-    setRows(updatedRows);
+    notify("Entrada editada com sucesso!");
   };
 
   const handleDeletarEntrada = function () {
-    console.log("Deletando entrada...");
-    deleteGastos(currentParams);
+    deleteGastos(currentParams._id);
     hideModalDeletar();
+    notify("Entrada deletada com sucesso!");
   };
-
-  // }
 
   return (
     <Container>
@@ -167,8 +170,10 @@ export const MyDataGrid = ({
       <Modal
         title="Editar entrada?"
         open={modalEditar}
-        onCancel={hideModalEditar}
         onOk={handleEditarEntrada}
+        okText="Editar"
+        onCancel={hideModalEditar}
+        cancelText="Cancelar"
       >
         <div
           style={{
@@ -215,12 +220,16 @@ export const MyDataGrid = ({
       <Modal
         title="Deletar entrada?"
         open={modalDeletar}
-        onCancel={hideModalDeletar}
         onOk={handleDeletarEntrada}
+        okText="Deletar"
+        okButtonProps={{ danger: true }}
+        onCancel={hideModalDeletar}
+        cancelText="Cancelar"
       >
         <div style={{ alignContent: "center", alignItems: "center" }}>
           <h2>
-            Tem certeza que deseja deletar a entrada de {currentParams.data}?
+            Tem certeza que deseja deletar a entrada do dia {currentParams.data}
+            ?
           </h2>
         </div>
       </Modal>

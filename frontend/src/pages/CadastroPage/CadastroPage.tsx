@@ -17,6 +17,8 @@ import { InputNumber, Modal, Statistic } from "antd";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { ValueMaxDatePicker } from "../../components/ValueMaxDatePicker";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // Interface para os dados da tabela
 interface Row {
@@ -34,6 +36,20 @@ interface DefaultValues {
 }
 
 function CadastroPage() {
+  // Gerando meu Toast
+  const notify = (mensagem: string) =>
+    toast.success(mensagem, {
+      position: "top-center",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+  console.log("ALo");
+
   // Gerando gasto mensal e meta de gastos
   const [gastoMesAtual, setGastoMesAtual] = useState(0);
 
@@ -55,6 +71,11 @@ function CadastroPage() {
   const showModalEditarValores = () => setModalEditarValores(true);
   const hideModalEditarValores = () => setModalEditarValores(false);
 
+  //State modal confirmar dados
+  const [modalConfirmarDados, setModalConfirmarDados] = useState(false);
+  const showModalConfirmarDados = () => setModalConfirmarDados(true);
+  const hideModalConfirmarDados = () => setModalConfirmarDados(false);
+
   // Pegar informações do backend
   useEffect(() => {
     atualizarTabela();
@@ -63,8 +84,7 @@ function CadastroPage() {
   }, []);
 
   const onClickSubmit = () => {
-    console.log("Clicou");
-    console.log(data);
+    notify("Compra salva com sucesso!");
 
     const postObject = {
       data: data,
@@ -74,10 +94,9 @@ function CadastroPage() {
     console.log(postObject);
 
     // Enviando os dados para o backend
-    postGastos(postObject).then(() => {
-      atualizarTabela();
-      atualizarGastoMesAtual();
-    });
+    postGastos(postObject);
+    atualizarTabela();
+    atualizarGastoMesAtual();
   };
 
   const onClickEditarValores = () => {
@@ -93,6 +112,7 @@ function CadastroPage() {
       atualizarDadosDefault();
       hideModalEditarValores();
       atualizarGastoMesAtual();
+      notify("Valores padrão salvos com sucesso!");
     });
   };
 
@@ -143,6 +163,11 @@ function CadastroPage() {
       });
   };
 
+  const handleModalConfirmarValores = function () {
+    onClickSubmit();
+    hideModalConfirmarDados();
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <Container>
@@ -181,6 +206,7 @@ function CadastroPage() {
               </Grid>
             </Grid>
           </Grid>
+
           <Grid
             style={{
               display: "flex",
@@ -252,9 +278,11 @@ function CadastroPage() {
                   variant="contained"
                   size="large"
                   style={{ display: "block", color: "" }}
-                  onClick={onClickSubmit}
+                  onClick={() => {
+                    showModalConfirmarDados();
+                  }}
                 >
-                  Salvar dados
+                  Salvar compra
                 </Button>
               </Grid>
               <Grid xs={12} sm={2}>
@@ -263,7 +291,10 @@ function CadastroPage() {
                   variant="contained"
                   size="large"
                   style={{ display: "block", color: "" }}
-                  onClick={atualizarTabela}
+                  onClick={() => {
+                    atualizarTabela();
+                    notify("Tabela atualizada com sucesso!");
+                  }}
                 >
                   Atualizar tabela
                 </Button>
@@ -276,13 +307,16 @@ function CadastroPage() {
                   style={{ display: "block", color: "" }}
                   onClick={showModalEditarValores}
                 >
-                  Entrada Padrão
+                  Compra Padrão
                 </Button>
               </Grid>
             </Grid>
           </Grid>
           <Grid xs={12} sm={10}>
             <MyDataGrid rows={rows} headerClassName="grid-header" />
+            <Button>Gráfico Gasto Mensal</Button>
+            <Button>Gráfico Gasto Diário</Button>
+            <Button>Importar Excel</Button>
           </Grid>
         </Grid>
         {/* Modal para editar valores padrão */}
@@ -296,9 +330,6 @@ function CadastroPage() {
           }}
           onCancel={hideModalEditarValores}
           cancelText="Cancelar"
-          cancelButtonProps={{
-            style: { backgroundColor: "red", color: "white" },
-          }}
         >
           <h3>Meta de gastos:</h3>
           <InputNumber
@@ -342,6 +373,23 @@ function CadastroPage() {
             }}
             style={{ width: "100%" }}
           />
+        </Modal>
+        {/* Modal para confirmação de entrada de dados */}
+        <Modal
+          title="Confirmar dados"
+          open={modalConfirmarDados}
+          onOk={handleModalConfirmarValores}
+          okText="Salvar"
+          okButtonProps={{
+            style: { backgroundColor: "#00a152", color: "white" },
+          }}
+          onCancel={hideModalConfirmarDados}
+          cancelText="Cancelar"
+        >
+          <h2>Tem certeza que deseja salvar os seguintes dados?</h2>
+          <h2>Data: {data}</h2>
+          <h2>Quantidade: {quantidadeRacao} kg</h2>
+          <h2>Valor: R$ {valorRacao}</h2>
         </Modal>
       </Container>
     </ThemeProvider>

@@ -8,19 +8,20 @@ import {
   TextInput,
   View,
 } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import defaultStyles from "../../themes/styles";
 import { useState } from "react";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { getGastosMesAtual, getValoresDefault } from "../../services/Api.js";
 
 export default function HomeScreen({ navigation }) {
   // State Setup (dados principais)
-  const [mediaMensal, setMediaMensal] = useState(100.25);
-  const [mesAtual, setMesAtual] = useState(500);
+  const [metaGastoMensal, setMetaGastoMensal] = useState(100.25);
+  const [gastoMesAtual, setMesAtual] = useState(500);
 
   // Arrow Setup
-  const arrowName = mesAtual <= 1000 ? "arrow-down" : "arrow-up";
+  const arrowName = gastoMesAtual <= 1000 ? "arrow-down" : "arrow-up";
 
   // State Setup (dados modal)
   const [valorGasto, setValorGasto] = useState(200.0);
@@ -33,6 +34,31 @@ export default function HomeScreen({ navigation }) {
   const [date, setDate] = useState(new Date());
   const [showPicker, setShowPicker] = useState(false);
   const toggleDatePicker = () => setShowPicker(!showPicker);
+
+  const atualizarGastoMestAtual = function () {
+    console.log("Atualizando gasto mensal...");
+    getGastosMesAtual().then((response) => {
+      const { gastoMensalAtual } = response.data;
+      console.log("Gasto mensal recebido: ", gastoMensalAtual);
+      setMesAtual(gastoMensalAtual);
+    });
+  };
+
+  const atualizarValoresDefault = function () {
+    console.log("Recebendo valores default...");
+    getValoresDefault().then((response) => {
+      const responseData = response.data[0];
+      console.log("Valores recebidos: ", responseData);
+      setMetaGastoMensal(responseData.metaGastoMensal);
+      setValorGasto(responseData.dinheiroDefault);
+      setQuantidadeComprada(responseData.quantidadeDefault);
+    });
+  };
+
+  useEffect(() => {
+    atualizarGastoMestAtual();
+    atualizarValoresDefault();
+  }, []);
 
   const onChangeDatePicker = ({ type }, selectedDate) => {
     if (type === "set") {
@@ -150,7 +176,7 @@ export default function HomeScreen({ navigation }) {
     console.log("Valor: ", valorGasto);
     console.log("Quantidade: ", quantidadeComprada);
   };
-  const sizeWidth = Dimensions.get("window").width;
+  // const sizeWidth = Dimensions.get("window").width;
 
   return (
     <View style={defaultStyles.mainView}>
@@ -160,9 +186,9 @@ export default function HomeScreen({ navigation }) {
             onPress={() => console.log("HomeScreen")}
             style={defaultStyles.textoGastosContainer}
           >
-            Gasto médio mensal:
+            Meta gastos mensais:
           </Text>
-          <Text style={defaultStyles.gastosText}>R$ {mediaMensal}</Text>
+          <Text style={defaultStyles.gastosText}>R$ {metaGastoMensal}</Text>
         </View>
 
         <View style={defaultStyles.gastosContainer}>
@@ -178,10 +204,10 @@ export default function HomeScreen({ navigation }) {
               <Text
                 style={{
                   ...defaultStyles.gastosText,
-                  color: mesAtual <= 1000 ? "#29C478" : "#C53B29",
+                  color: gastoMesAtual <= 1000 ? "#29C478" : "#C53B29",
                 }}
               >
-                {mesAtual}
+                {gastoMesAtual}
                 {/* <Ionicons name={arrowName} style={{ fontSize: 33 }} /> */}
               </Text>
             </View>
