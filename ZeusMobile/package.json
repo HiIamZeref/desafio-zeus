@@ -15,6 +15,7 @@
     "@react-navigation/native": "^6.1.17",
     "@react-navigation/stack": "^6.3.29",
     "axios": "^1.6.8",
+    "date-fns": "^3.6.0",
     "expo": "~50.0.14",
     "expo-dev-client": "^3.3.11",
     "expo-status-bar": "~1.11.1",
@@ -25,7 +26,8 @@
     "react-native-reanimated": "~3.6.2",
     "react-native-reanimated-carousel": "^3.5.1",
     "react-native-safe-area-context": "4.8.2",
-    "react-native-screens": "~3.29.0"
+    "react-native-screens": "~3.29.0",
+    "react-native-toast-message": "^2.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

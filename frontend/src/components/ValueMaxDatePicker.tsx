@@ -31,6 +31,7 @@ export const ValueMaxDatePicker = ({
       size="large"
       value={dayjs(value, dateFormat)}
       onChange={(date) => handleDateChange(date.format(dateFormat))}
+      inputReadOnly
     />
   );
 };

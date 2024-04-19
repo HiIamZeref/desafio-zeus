@@ -1,9 +1,8 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Image } from "react-native";
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Ionicons from "react-native-vector-icons/Ionicons";
-
 import HomeScreen from "./screens/HomeScreen";
 import DetailsScreen from "./screens/DetailsScreen";
 import SettingsScreen from "./screens/SettingsScreen";
@@ -41,6 +40,19 @@ export default function MainContainer() {
 
             return <Ionicons name={iconName} size={size} color={color} />;
           },
+          headerTitle: (route) => (
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <Image
+                source={require("../assets/meu_icone.png")}
+                style={{ width: 50, height: 50 }}
+              />
+              <Text
+                style={{ color: "#f0a30a", fontSize: 26, fontWeight: "bold" }}
+              >
+                DogeApp
+              </Text>
+            </View>
+          ),
         })}
       >
         <Tab.Screen name={homeName} component={HomeScreen} />

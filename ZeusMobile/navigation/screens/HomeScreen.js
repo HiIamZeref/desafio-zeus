@@ -1,5 +1,4 @@
 import {
-  Dimensions,
   Modal,
   Platform,
   Pressable,
@@ -8,12 +7,18 @@ import {
   TextInput,
   View,
 } from "react-native";
-import React, { useEffect } from "react";
+import React from "react";
 import defaultStyles from "../../themes/styles";
 import { useState } from "react";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import Ionicons from "react-native-vector-icons/Ionicons";
-import { getGastosMesAtual, getValoresDefault } from "../../services/Api.js";
+import {
+  getGastosMesAtual,
+  getDefaultValues,
+  postGasto,
+} from "../../services/Api.js";
+import { useFocusEffect } from "@react-navigation/native";
+import Toast from "react-native-toast-message";
+import { format } from "date-fns";
 
 export default function HomeScreen({ navigation }) {
   // State Setup (dados principais)
@@ -35,30 +40,42 @@ export default function HomeScreen({ navigation }) {
   const [showPicker, setShowPicker] = useState(false);
   const toggleDatePicker = () => setShowPicker(!showPicker);
 
-  const atualizarGastoMestAtual = function () {
-    console.log("Atualizando gasto mensal...");
+  const atualizarGastoMesAtual = function () {
+    // console.log("Atualizando gasto mensal...");
     getGastosMesAtual().then((response) => {
       const { gastoMensalAtual } = response.data;
-      console.log("Gasto mensal recebido: ", gastoMensalAtual);
+      // console.log("Gasto mensal recebido: ", gastoMensalAtual);
       setMesAtual(gastoMensalAtual);
     });
   };
 
   const atualizarValoresDefault = function () {
-    console.log("Recebendo valores default...");
-    getValoresDefault().then((response) => {
+    // console.log("Recebendo valores default...");
+    getDefaultValues().then((response) => {
       const responseData = response.data[0];
-      console.log("Valores recebidos: ", responseData);
+      // console.log("Valores recebidos: ", responseData);
       setMetaGastoMensal(responseData.metaGastoMensal);
       setValorGasto(responseData.dinheiroDefault);
       setQuantidadeComprada(responseData.quantidadeDefault);
     });
   };
 
-  useEffect(() => {
-    atualizarGastoMestAtual();
-    atualizarValoresDefault();
-  }, []);
+  // useEffect(() => {
+  //   atualizarGastoMestAtual();
+  //   atualizarValoresDefault();
+  // }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      console.log("Entrando em HomeScreen.");
+      atualizarGastoMesAtual();
+      atualizarValoresDefault();
+
+      return () => {
+        console.log("Saindo de HomeScreen.");
+      };
+    }, [])
+  );
 
   const onChangeDatePicker = ({ type }, selectedDate) => {
     if (type === "set") {
@@ -103,6 +120,9 @@ export default function HomeScreen({ navigation }) {
                 mode="date"
                 display="calendar"
                 value={date}
+                dateFormat="day month year"
+                maximumDate={new Date()}
+                minimumDate={new Date(2020, 0, 0)}
                 onChange={onChangeDatePicker}
               />
             )}
@@ -112,7 +132,7 @@ export default function HomeScreen({ navigation }) {
             </Text>
             <View style={defaultStyles.defaultInputContainer}>
               <TextInput
-                style={{ textAlign: "center" }}
+                style={{ textAlign: "center", width: "100%" }}
                 keyboardType="number-pad"
                 maxLength={6}
                 defaultValue={valorGasto.toString()}
@@ -124,10 +144,11 @@ export default function HomeScreen({ navigation }) {
 
             {/* Input Quantidade */}
             <Text style={{ fontSize: 20, fontWeight: "bold" }}>
-              Quantidade comprada (Kg):
+              Quantidade comprada (kg):
             </Text>
             <View style={defaultStyles.defaultInputContainer}>
               <TextInput
+                style={{ textAlign: "center", width: "100%" }}
                 keyboardType="number-pad"
                 maxLength={6}
                 defaultValue={quantidadeComprada.toString()}
@@ -172,11 +193,36 @@ export default function HomeScreen({ navigation }) {
 
   const handleInsert = function () {
     console.log("Inserindo compra...");
-    console.log("Data: ", date);
+    const formattedDate = format(new Date(date), "dd/MM/yyyy");
+
+    console.log("Data: ", formattedDate);
     console.log("Valor: ", valorGasto);
     console.log("Quantidade: ", quantidadeComprada);
+
+    const compra = {
+      data: formattedDate,
+      quantidade: quantidadeComprada,
+      dinheiro: valorGasto,
+    };
+    postGasto(compra);
+    setModalVisible(false);
+    showToast();
+    atualizarGastoMesAtual();
   };
-  // const sizeWidth = Dimensions.get("window").width;
+
+  // Toast setup
+  const showToast = () => {
+    Toast.show({
+      type: "success",
+      position: "top",
+      text1: "Compra registrada!",
+      text2: "A compra foi registrada com sucesso!",
+      visibilityTime: 3000,
+      autoHide: true,
+      topOffset: 30,
+      bottomOffset: 40,
+    });
+  };
 
   return (
     <View style={defaultStyles.mainView}>
@@ -224,6 +270,7 @@ export default function HomeScreen({ navigation }) {
         </Pressable>
         {renderModal()}
       </View>
+      <Toast />
     </View>
   );
 }

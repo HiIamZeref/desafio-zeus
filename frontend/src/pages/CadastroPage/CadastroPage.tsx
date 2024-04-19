@@ -19,6 +19,7 @@ import customParseFormat from "dayjs/plugin/customParseFormat";
 import { ValueMaxDatePicker } from "../../components/ValueMaxDatePicker";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import logo from "../../assets/meu_icone.png";
 
 // Interface para os dados da tabela
 interface Row {
@@ -170,228 +171,239 @@ function CadastroPage() {
 
   return (
     <ThemeProvider theme={theme}>
-      <Container>
-        <Grid container spacing={2} justifyContent="center" alignItems="center">
-          <Grid xs={12} sm={12} lg={12} textAlign="center">
+      <Grid container spacing={2}>
+        <Grid xs={12} sm={12} lg={12} textAlign="center">
+          <img src={logo} style={{ height: 180, width: 180 }} />
+          <h1 className="mainHeader">DogeApp</h1>
+        </Grid>
+        <Grid xs={12} sm={12} lg={12}>
+          <Container>
             <Grid
               container
+              spacing={2}
               justifyContent="center"
               alignItems="center"
-              gap={"1rem"}
             >
+              <Grid xs={12} sm={12} lg={12} textAlign="center">
+                <Grid
+                  container
+                  justifyContent="center"
+                  alignItems="center"
+                  gap={"1rem"}
+                >
+                  <Grid
+                    xs={12}
+                    sm={6}
+                    justifyContent={"center"}
+                    alignItems={"center"}
+                  >
+                    <Statistic
+                      title="Total gasto nesse mês"
+                      value={gastoMesAtual}
+                      precision={2}
+                      decimalSeparator=","
+                      prefix="R$"
+                      groupSeparator="."
+                    />
+                  </Grid>
+                  <Grid xs={12} sm={6}>
+                    <Statistic
+                      title="Meta de gastos"
+                      value={metaGastos}
+                      precision={2}
+                      decimalSeparator=","
+                      groupSeparator="."
+                      prefix="R$"
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
               <Grid
-                xs={12}
-                sm={6}
-                justifyContent={"center"}
-                alignItems={"center"}
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  gap: "1rem",
+                }}
               >
-                <Statistic
-                  title="Total gasto nesse mês"
-                  value={gastoMesAtual}
-                  precision={2}
-                  decimalSeparator=","
-                  prefix="R$"
-                  groupSeparator="."
-                />
+                <Grid
+                  container
+                  spacing={1}
+                  alignItems={"center"}
+                  justifyContent={"center"}
+                >
+                  <Grid xs={12} sm={2}>
+                    <div>
+                      <h3>Data da compra:</h3>
+                      <ValueMaxDatePicker
+                        style={{ width: "100%" }}
+                        value={data}
+                        onChange={(newData) => {
+                          setData(newData);
+                        }}
+                      />
+                    </div>
+                  </Grid>
+                  <Grid xs={12} sm={2}>
+                    <div>
+                      <h3>Quantidade comprada:</h3>
+                      <InputNumber
+                        id="quantidadeRacao"
+                        size="large"
+                        value={quantidadeRacao}
+                        onChange={(value) => {
+                          if (value !== null) {
+                            setQuantidadeRacao(value);
+                          }
+                        }}
+                        suffix="kg"
+                        min={1}
+                        max={999.99}
+                        style={{ width: "100%" }}
+                      />
+                    </div>
+                  </Grid>
+                  <Grid xs={12} sm={2}>
+                    <div>
+                      <h3>Valor gasto: </h3>
+                      <InputNumber
+                        id="valorRacao"
+                        size="large"
+                        value={valorRacao}
+                        prefix="R$"
+                        min={1}
+                        max={9999.99}
+                        onChange={(value) => {
+                          if (value !== null) {
+                            setValorRacao(value);
+                          }
+                        }}
+                        style={{ width: "100%" }}
+                      />
+                    </div>
+                  </Grid>
+                  <Grid xs={12} sm={2}>
+                    <Button
+                      className="default-btn"
+                      variant="contained"
+                      size="large"
+                      style={{ display: "block", color: "" }}
+                      onClick={() => {
+                        showModalConfirmarDados();
+                      }}
+                    >
+                      Salvar compra
+                    </Button>
+                  </Grid>
+                  <Grid xs={12} sm={2}>
+                    <Button
+                      className="default-btn"
+                      variant="contained"
+                      size="large"
+                      style={{ display: "block", color: "" }}
+                      onClick={() => {
+                        atualizarTabela();
+                        notify("Tabela atualizada com sucesso!");
+                      }}
+                    >
+                      Atualizar tabela
+                    </Button>
+                  </Grid>
+                  <Grid xs={12} sm={2}>
+                    <Button
+                      className="default-btn"
+                      variant="contained"
+                      size="large"
+                      style={{ display: "block", color: "" }}
+                      onClick={showModalEditarValores}
+                    >
+                      Compra Padrão
+                    </Button>
+                  </Grid>
+                </Grid>
               </Grid>
-              <Grid xs={12} sm={6}>
-                <Statistic
-                  title="Meta de gastos"
-                  value={metaGastos}
-                  precision={2}
-                  decimalSeparator=","
-                  groupSeparator="."
-                  prefix="R$"
-                />
+              <Grid xs={12} sm={10}>
+                <MyDataGrid rows={rows} headerClassName="grid-header" />
+                <Button>Gráfico Gasto Mensal</Button>
+                <Button>Gráfico Gasto Diário</Button>
+                <Button>Importar Excel</Button>
               </Grid>
             </Grid>
-          </Grid>
-
-          <Grid
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "center",
-              gap: "1rem",
-            }}
-          >
-            <Grid
-              container
-              spacing={1}
-              alignItems={"center"}
-              justifyContent={"center"}
+            {/* Modal para editar valores padrão */}
+            <Modal
+              title="Editar valores padrão"
+              open={modalEditarValores}
+              onOk={onClickEditarValores}
+              okText="Salvar"
+              okButtonProps={{
+                style: { backgroundColor: "#00a152", color: "white" },
+              }}
+              onCancel={hideModalEditarValores}
+              cancelText="Cancelar"
             >
-              <Grid xs={12} sm={2}>
-                <div>
-                  <h3>Data da compra:</h3>
-                  <ValueMaxDatePicker
-                    style={{ width: "100%" }}
-                    value={data}
-                    onChange={(newData) => {
-                      setData(newData);
-                    }}
-                  />
-                </div>
-              </Grid>
-
-              <Grid xs={12} sm={2}>
-                <div>
-                  <h3>Quantidade comprada:</h3>
-                  <InputNumber
-                    id="quantidadeRacao"
-                    size="large"
-                    value={quantidadeRacao}
-                    onChange={(value) => {
-                      if (value !== null) {
-                        setQuantidadeRacao(value);
-                      }
-                    }}
-                    suffix="kg"
-                    min={1}
-                    max={999.99}
-                    style={{ width: "100%" }}
-                  />
-                </div>
-              </Grid>
-              <Grid xs={12} sm={2}>
-                <div>
-                  <h3>Valor gasto: </h3>
-                  <InputNumber
-                    id="valorRacao"
-                    size="large"
-                    value={valorRacao}
-                    prefix="R$"
-                    min={1}
-                    max={9999.99}
-                    onChange={(value) => {
-                      if (value !== null) {
-                        setValorRacao(value);
-                      }
-                    }}
-                    style={{ width: "100%" }}
-                  />
-                </div>
-              </Grid>
-              <Grid xs={12} sm={2}>
-                <Button
-                  className="default-btn"
-                  variant="contained"
-                  size="large"
-                  style={{ display: "block", color: "" }}
-                  onClick={() => {
-                    showModalConfirmarDados();
-                  }}
-                >
-                  Salvar compra
-                </Button>
-              </Grid>
-              <Grid xs={12} sm={2}>
-                <Button
-                  className="default-btn"
-                  variant="contained"
-                  size="large"
-                  style={{ display: "block", color: "" }}
-                  onClick={() => {
-                    atualizarTabela();
-                    notify("Tabela atualizada com sucesso!");
-                  }}
-                >
-                  Atualizar tabela
-                </Button>
-              </Grid>
-              <Grid xs={12} sm={2}>
-                <Button
-                  className="default-btn"
-                  variant="contained"
-                  size="large"
-                  style={{ display: "block", color: "" }}
-                  onClick={showModalEditarValores}
-                >
-                  Compra Padrão
-                </Button>
-              </Grid>
-            </Grid>
-          </Grid>
-          <Grid xs={12} sm={10}>
-            <MyDataGrid rows={rows} headerClassName="grid-header" />
-            <Button>Gráfico Gasto Mensal</Button>
-            <Button>Gráfico Gasto Diário</Button>
-            <Button>Importar Excel</Button>
-          </Grid>
+              <h3>Meta de gastos:</h3>
+              <InputNumber
+                size="large"
+                value={metaGastosDefault}
+                onChange={(value) => {
+                  if (value !== null) {
+                    setMetaGastosDefault(value);
+                  }
+                }}
+                prefix="R$"
+                min={1}
+                max={9999.99}
+                style={{ width: "100%" }}
+              />
+              <h3>Quantidade comprada padrão:</h3>
+              <InputNumber
+                size="large"
+                value={racaoDefault}
+                onChange={(value) => {
+                  if (value !== null) {
+                    setRacaoDefault(value);
+                  }
+                }}
+                suffix="kg"
+                min={1}
+                max={999.99}
+                style={{ width: "100%" }}
+              />
+              <h3>Valor gasto padrão:</h3>
+              <InputNumber
+                size="large"
+                value={valorDefault}
+                prefix="R$"
+                min={1}
+                max={9999.99}
+                onChange={(value) => {
+                  if (value !== null) {
+                    setValorDefault(value);
+                  }
+                }}
+                style={{ width: "100%" }}
+              />
+            </Modal>
+            {/* Modal para confirmação de entrada de dados */}
+            <Modal
+              title="Confirmar dados"
+              open={modalConfirmarDados}
+              onOk={handleModalConfirmarValores}
+              okText="Salvar"
+              okButtonProps={{
+                style: { backgroundColor: "#00a152", color: "white" },
+              }}
+              onCancel={hideModalConfirmarDados}
+              cancelText="Cancelar"
+            >
+              <h2>Tem certeza que deseja salvar os seguintes dados?</h2>
+              <h2>Data: {data}</h2>
+              <h2>Quantidade: {quantidadeRacao} kg</h2>
+              <h2>Valor: R$ {valorRacao}</h2>
+            </Modal>
+          </Container>
         </Grid>
-        {/* Modal para editar valores padrão */}
-        <Modal
-          title="Editar valores padrão"
-          open={modalEditarValores}
-          onOk={onClickEditarValores}
-          okText="Salvar"
-          okButtonProps={{
-            style: { backgroundColor: "#00a152", color: "white" },
-          }}
-          onCancel={hideModalEditarValores}
-          cancelText="Cancelar"
-        >
-          <h3>Meta de gastos:</h3>
-          <InputNumber
-            size="large"
-            value={metaGastosDefault}
-            onChange={(value) => {
-              if (value !== null) {
-                setMetaGastosDefault(value);
-              }
-            }}
-            prefix="R$"
-            min={1}
-            max={9999.99}
-            style={{ width: "100%" }}
-          />
-          <h3>Quantidade comprada padrão:</h3>
-          <InputNumber
-            size="large"
-            value={racaoDefault}
-            onChange={(value) => {
-              if (value !== null) {
-                setRacaoDefault(value);
-              }
-            }}
-            suffix="kg"
-            min={1}
-            max={999.99}
-            style={{ width: "100%" }}
-          />
-          <h3>Valor gasto padrão:</h3>
-          <InputNumber
-            size="large"
-            value={valorDefault}
-            prefix="R$"
-            min={1}
-            max={9999.99}
-            onChange={(value) => {
-              if (value !== null) {
-                setValorDefault(value);
-              }
-            }}
-            style={{ width: "100%" }}
-          />
-        </Modal>
-        {/* Modal para confirmação de entrada de dados */}
-        <Modal
-          title="Confirmar dados"
-          open={modalConfirmarDados}
-          onOk={handleModalConfirmarValores}
-          okText="Salvar"
-          okButtonProps={{
-            style: { backgroundColor: "#00a152", color: "white" },
-          }}
-          onCancel={hideModalConfirmarDados}
-          cancelText="Cancelar"
-        >
-          <h2>Tem certeza que deseja salvar os seguintes dados?</h2>
-          <h2>Data: {data}</h2>
-          <h2>Quantidade: {quantidadeRacao} kg</h2>
-          <h2>Valor: R$ {valorRacao}</h2>
-        </Modal>
-      </Container>
+      </Grid>
     </ThemeProvider>
   );
 }

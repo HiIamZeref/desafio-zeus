@@ -13,7 +13,7 @@ const getDefaultValues = async function (req, res) {
   }
 };
 
-const updateDefaultValues = async function (req, res) {
+const patchDefaultValues = async function (req, res) {
   console.log("Updating default values...");
   const { newQuantidadeDefault, newDinheiroDefault, newMetaGastoMensal } =
     req.body;
@@ -45,4 +45,4 @@ const updateDefaultValues = async function (req, res) {
   }
 };
 
-export { getDefaultValues, updateDefaultValues };
+export { getDefaultValues, patchDefaultValues as updateDefaultValues };

@@ -4,6 +4,7 @@
   padding: 0;
   box-sizing: border-box;
 }
+
 body {
   background-color: #3a609b;
   font-family: "Roboto", sans-serif;
@@ -36,6 +37,13 @@ body {
   border: none;
   border-radius: 5px;
   cursor: pointer;
+}
+
+.mainHeader {
+  font-family: "Roboto";
+  color: #f0a30a;
+  text-align: center;
+  font-size: 60px;
 }
 
 h3 {

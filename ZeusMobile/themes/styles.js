@@ -41,7 +41,7 @@ const defaultStyles = StyleSheet.create({
     borderWidth: 1,
     padding: 10,
     borderRadius: 10,
-    width: 120,
+    width: 200,
     textAlign: "center",
   },
 
@@ -54,7 +54,7 @@ const defaultStyles = StyleSheet.create({
     marginHorizontal: 10,
     borderRadius: 10,
     padding: 5,
-    width: 120,
+    width: 200,
     textAlign: "center",
   },
   gastosContainer: {
