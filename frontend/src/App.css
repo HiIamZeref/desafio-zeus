@@ -14,11 +14,13 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: 100%;
   padding: 1rem;
 }
 
 .grid-header {
+  align-items: "center";
+  justify-content: "center";
   background-color: #f0a30a;
   color: white;
   padding: 10px;

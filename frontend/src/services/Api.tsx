@@ -16,6 +16,7 @@ const api = axios.create({
   baseURL: "http://localhost:8080",
 });
 
+//Rotas Gastos
 export const getGastos = async function () {
   return await api
     .get("/gastos")
@@ -66,6 +67,7 @@ export const patchGastos = async function (gastos) {
     });
 };
 
+//Rotas Gastos Agregados
 export const getGastosMesAtual = async function () {
   return await api
     .get("/gastosMesAtual")
@@ -78,6 +80,19 @@ export const getGastosMesAtual = async function () {
     });
 };
 
+export const getGastosMesTotal = async function () {
+  return await api
+    .get("/gastosMesTotal")
+    .then((response) => {
+      console.log("Gastos mes total recebidos");
+      return response.data;
+    })
+    .catch((error) => {
+      throw new Error(`Erro ao buscar gastos: ${error}`);
+    });
+};
+
+//Rotas DefaultValues
 export const getDefaultValues = async function () {
   return await api
     .get("/defaultValues")

@@ -159,6 +159,7 @@ export const MyDataGrid = ({
   return (
     <Container>
       <DataGrid
+        rowHeight={60}
         rows={initialRows}
         columns={columns}
         disableRowSelectionOnClick

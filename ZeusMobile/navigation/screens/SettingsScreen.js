@@ -144,13 +144,13 @@ export default function SettingsScreen({ navigation }) {
             </View>
             <Text style={{ fontSize: 20, fontWeight: "bold" }}>Email:</Text>
             <View style={defaultStyles.defaultInputContainer}>
-              <Text>felipe@unifor.br</Text>
+              <Text style={{ fontSize: 20 }}>felipe@unifor.br</Text>
             </View>
             <Text style={{ fontSize: 20, fontWeight: "bold" }}>
               Nome do Pet:
             </Text>
             <View style={defaultStyles.defaultInputContainer}>
-              <Text>King Haru</Text>
+              <Text style={{ fontSize: 20 }}>King Haru</Text>
             </View>
             <Pressable onPress={hideModalPerfil}>
               <Text style={defaultStyles.insertPressable}>Voltar</Text>
@@ -174,6 +174,9 @@ export default function SettingsScreen({ navigation }) {
           <View style={defaultStyles.modalView}>
             <Text style={{ fontSize: 20, fontWeight: "bold" }}>
               Valores Padrão
+            </Text>
+            <Text style={{ fontSize: 16 }}>
+              Editar os valores padrão para um registro de compra
             </Text>
             <Text style={{ fontSize: 20, fontWeight: "bold" }}>
               Meta de Gastos:

@@ -18,7 +18,7 @@ const calcGastoAtual = (gastosList) => {
     }
   });
 
-  return total;
+  return total.toFixed(2);
 };
 
 const calcGastoMensalTotal = (gastosList) => {
@@ -61,7 +61,26 @@ const calcGastoMensalTotal = (gastosList) => {
     }
   });
 
+  //Itere pelo totalobject e arredonde os valores
+  for (const key in totalObject) {
+    totalObject[key] = totalObject[key].toFixed(2);
+  }
+
   return totalObject;
 };
 
-export { calcGastoAtual, calcGastoMensalTotal };
+function ordenarListaPorData(array) {
+  array.sort((a, b) => {
+    const [dayA, monthA, yearA] = a.data.split("/");
+    const [dayB, monthB, yearB] = b.data.split("/");
+
+    const dateA = new Date(yearA, monthA - 1, dayA);
+    const dateB = new Date(yearB, monthB - 1, dayB);
+
+    return dateB - dateA; // Ordena do mais recente para o mais antigo
+  });
+
+  return array;
+}
+
+export { calcGastoAtual, calcGastoMensalTotal, ordenarListaPorData };

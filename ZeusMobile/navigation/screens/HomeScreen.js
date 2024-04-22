@@ -1,4 +1,5 @@
 import {
+  FlatList,
   Modal,
   Platform,
   Pressable,
@@ -12,6 +13,7 @@ import defaultStyles from "../../themes/styles";
 import { useState } from "react";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import {
+  getGastos,
   getGastosMesAtual,
   getDefaultValues,
   postGasto,
@@ -25,8 +27,8 @@ export default function HomeScreen({ navigation }) {
   const [metaGastoMensal, setMetaGastoMensal] = useState(100.25);
   const [gastoMesAtual, setMesAtual] = useState(500);
 
-  // Arrow Setup
-  const arrowName = gastoMesAtual <= 1000 ? "arrow-down" : "arrow-up";
+  // State Setup (últimas compras)
+  const [ultimasCompras, setUltimasCompras] = useState([]);
 
   // State Setup (dados modal)
   const [valorGasto, setValorGasto] = useState(200.0);
@@ -40,11 +42,21 @@ export default function HomeScreen({ navigation }) {
   const [showPicker, setShowPicker] = useState(false);
   const toggleDatePicker = () => setShowPicker(!showPicker);
 
+  const atualizarUltimasCompras = function () {
+    console.log("Atualizando últimas compras...");
+    getGastos().then((response) => {
+      const responseData = response.data;
+      const dezUltimasCompras = responseData.slice(0, 10);
+      console.log("Dez últimas compras: ", dezUltimasCompras);
+      setUltimasCompras(dezUltimasCompras);
+    });
+  };
+
   const atualizarGastoMesAtual = function () {
     // console.log("Atualizando gasto mensal...");
     getGastosMesAtual().then((response) => {
       const { gastoMensalAtual } = response.data;
-      // console.log("Gasto mensal recebido: ", gastoMensalAtual);
+      console.log("Gasto mensal recebido: ", gastoMensalAtual);
       setMesAtual(gastoMensalAtual);
     });
   };
@@ -54,22 +66,18 @@ export default function HomeScreen({ navigation }) {
     getDefaultValues().then((response) => {
       const responseData = response.data[0];
       // console.log("Valores recebidos: ", responseData);
-      setMetaGastoMensal(responseData.metaGastoMensal);
+      setMetaGastoMensal(responseData.metaGastoMensal.toFixed(2));
       setValorGasto(responseData.dinheiroDefault);
       setQuantidadeComprada(responseData.quantidadeDefault);
     });
   };
-
-  // useEffect(() => {
-  //   atualizarGastoMestAtual();
-  //   atualizarValoresDefault();
-  // }, []);
 
   useFocusEffect(
     React.useCallback(() => {
       console.log("Entrando em HomeScreen.");
       atualizarGastoMesAtual();
       atualizarValoresDefault();
+      atualizarUltimasCompras();
 
       return () => {
         console.log("Saindo de HomeScreen.");
@@ -205,9 +213,10 @@ export default function HomeScreen({ navigation }) {
       dinheiro: valorGasto,
     };
     postGasto(compra);
+    atualizarGastoMesAtual();
+    atualizarUltimasCompras();
     setModalVisible(false);
     showToast();
-    atualizarGastoMesAtual();
   };
 
   // Toast setup
@@ -269,6 +278,20 @@ export default function HomeScreen({ navigation }) {
           <Text style={defaultStyles.insertPressable}>Registrar Compra</Text>
         </Pressable>
         {renderModal()}
+        <View style={defaultStyles.content}>
+          <Text style={defaultStyles.mainText}>Últimas 10 compras</Text>
+          <FlatList
+            data={ultimasCompras}
+            renderItem={({ item }) => (
+              <View style={defaultStyles.gastosContainer}>
+                <Text style={defaultStyles.textoGastosContainer}>
+                  {item.data}
+                </Text>
+                <Text style={defaultStyles.gastosText}>R$ {item.dinheiro}</Text>
+              </View>
+            )}
+          />
+        </View>
       </View>
       <Toast />
     </View>

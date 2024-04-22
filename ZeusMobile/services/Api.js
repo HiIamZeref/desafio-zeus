@@ -5,14 +5,17 @@ export const api = axios.create({
 });
 
 // Rotas Gastos
-export const getGastosMesAtual = async function () {
-  return await api.get("/gastosMesAtual");
+export const getGastos = async function () {
+  return await api.get("/gastos");
 };
 
 export const postGasto = async function (gasto) {
   return await api.post("/gastos", gasto);
 };
 
+export const getGastosMesAtual = async function () {
+  return await api.get("/gastosMesAtual");
+};
 export const getGastosMesTotal = async function () {
   return await api.get("/gastosMesTotal");
 };

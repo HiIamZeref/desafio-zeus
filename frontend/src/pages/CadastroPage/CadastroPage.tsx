@@ -10,6 +10,7 @@ import {
   getGastosMesAtual,
   getDefaultValues,
   patchDefaultValues,
+  getGastosMesTotal,
 } from "../../services/Api";
 import Grid from "@mui/material/Unstable_Grid2";
 import { ObjectId } from "mongoose";
@@ -20,6 +21,11 @@ import { ValueMaxDatePicker } from "../../components/ValueMaxDatePicker";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import logo from "../../assets/meu_icone.png";
+import Chart from "chart.js/auto";
+import { CategoryScale } from "chart.js";
+import { Line } from "react-chartjs-2";
+
+Chart.register(CategoryScale);
 
 // Interface para os dados da tabela
 interface Row {
@@ -77,11 +83,44 @@ function CadastroPage() {
   const showModalConfirmarDados = () => setModalConfirmarDados(true);
   const hideModalConfirmarDados = () => setModalConfirmarDados(false);
 
+  // Modal Gráfico
+  const [modalGrafico, setModalGrafico] = useState(false);
+  const showModalGrafico = () => setModalGrafico(true);
+  const hideModalGrafico = () => setModalGrafico(false);
+
+  //Labels & Datasets gráfico gastos mensais
+  const [dataGrafico, setDataGrafico] = useState({
+    labels: [
+      "Janeiro",
+      "Fevereiro",
+      "Março",
+      "Abril",
+      "Maio",
+      "Junho",
+      "Julho",
+      "Agosto",
+      "Setembro",
+      "Outubro",
+      "Novembro",
+      "Dezembro",
+    ],
+    datasets: [
+      {
+        label: "Gastos mensais de 2024",
+        data: [],
+        fill: false,
+        backgroundColor: "#f0a30a",
+        borderColor: "#f0a30a",
+      },
+    ],
+  });
+
   // Pegar informações do backend
   useEffect(() => {
     atualizarTabela();
     atualizarGastoMesAtual();
     atualizarDadosDefault();
+    atualizarGrafico();
   }, []);
 
   const onClickSubmit = () => {
@@ -98,6 +137,7 @@ function CadastroPage() {
     postGastos(postObject);
     atualizarTabela();
     atualizarGastoMesAtual();
+    atualizarGrafico();
   };
 
   const onClickEditarValores = () => {
@@ -113,6 +153,7 @@ function CadastroPage() {
       atualizarDadosDefault();
       hideModalEditarValores();
       atualizarGastoMesAtual();
+      atualizarGrafico();
       notify("Valores padrão salvos com sucesso!");
     });
   };
@@ -167,6 +208,32 @@ function CadastroPage() {
   const handleModalConfirmarValores = function () {
     onClickSubmit();
     hideModalConfirmarDados();
+  };
+
+  const atualizarGrafico = function () {
+    getGastosMesTotal()
+      .then((data) => {
+        console.log("Gasto mensal de 2024:");
+        console.log(data);
+        //setLabels(Object.keys(data));
+        //setDataSets(Object.values(data));
+        Object.keys(data).forEach((key) => {
+          setDataGrafico((prevState) => {
+            return {
+              ...prevState,
+              datasets: [
+                {
+                  ...prevState.datasets[0],
+                  data: [...prevState.datasets[0].data, data[key]],
+                },
+              ],
+            };
+          });
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
 
   return (
@@ -232,7 +299,7 @@ function CadastroPage() {
                   alignItems={"center"}
                   justifyContent={"center"}
                 >
-                  <Grid xs={12} sm={2}>
+                  <Grid xs={12} sm={4}>
                     <div>
                       <h3>Data da compra:</h3>
                       <ValueMaxDatePicker
@@ -244,7 +311,7 @@ function CadastroPage() {
                       />
                     </div>
                   </Grid>
-                  <Grid xs={12} sm={2}>
+                  <Grid xs={12} sm={4}>
                     <div>
                       <h3>Quantidade comprada:</h3>
                       <InputNumber
@@ -263,7 +330,7 @@ function CadastroPage() {
                       />
                     </div>
                   </Grid>
-                  <Grid xs={12} sm={2}>
+                  <Grid xs={12} sm={4}>
                     <div>
                       <h3>Valor gasto: </h3>
                       <InputNumber
@@ -282,7 +349,7 @@ function CadastroPage() {
                       />
                     </div>
                   </Grid>
-                  <Grid xs={12} sm={2}>
+                  <Grid xs={12} sm={4}>
                     <Button
                       className="default-btn"
                       variant="contained"
@@ -295,7 +362,7 @@ function CadastroPage() {
                       Salvar compra
                     </Button>
                   </Grid>
-                  <Grid xs={12} sm={2}>
+                  <Grid xs={12} sm={4}>
                     <Button
                       className="default-btn"
                       variant="contained"
@@ -309,7 +376,7 @@ function CadastroPage() {
                       Atualizar tabela
                     </Button>
                   </Grid>
-                  <Grid xs={12} sm={2}>
+                  <Grid xs={12} sm={4}>
                     <Button
                       className="default-btn"
                       variant="contained"
@@ -324,8 +391,8 @@ function CadastroPage() {
               </Grid>
               <Grid xs={12} sm={10}>
                 <MyDataGrid rows={rows} headerClassName="grid-header" />
-                <Button>Gráfico Gasto Mensal</Button>
-                <Button>Gráfico Gasto Diário</Button>
+                <Button onClick={showModalGrafico}>Gráfico Gasto Mensal</Button>
+                {/* <Button>Gráfico Gasto Diário</Button> */}
                 <Button>Importar Excel</Button>
               </Grid>
             </Grid>
@@ -341,6 +408,7 @@ function CadastroPage() {
               onCancel={hideModalEditarValores}
               cancelText="Cancelar"
             >
+              <h2>Altere os valores de entrada padrão para uma compra:</h2>
               <h3>Meta de gastos:</h3>
               <InputNumber
                 size="large"
@@ -400,6 +468,15 @@ function CadastroPage() {
               <h2>Data: {data}</h2>
               <h2>Quantidade: {quantidadeRacao} kg</h2>
               <h2>Valor: R$ {valorRacao}</h2>
+            </Modal>
+            {/* Modal para gráfico */}
+            <Modal
+              title="Gastos mensais agrupados"
+              open={modalGrafico}
+              footer={null}
+              onCancel={hideModalGrafico}
+            >
+              <Line data={dataGrafico} />
             </Modal>
           </Container>
         </Grid>

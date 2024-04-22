@@ -1,11 +1,17 @@
 import { gastosModel } from "../models/gastosModel.js";
-import { calcGastoAtual, calcGastoMensalTotal } from "../services/utils.js";
+import {
+  calcGastoAtual,
+  calcGastoMensalTotal,
+  ordenarListaPorData,
+} from "../services/utils.js";
 import { ObjectId } from "mongodb";
 
 const getGastos = async function (req, res) {
+  // Retorna os gastos ordenados por data
   console.log("Getting gastos");
   try {
-    const allGastos = await gastosModel.find();
+    let allGastos = await gastosModel.find();
+    allGastos = ordenarListaPorData(allGastos);
     res.status(200).send(allGastos);
     console.log(allGastos);
     console.log("Gastos gotten and sent!");
