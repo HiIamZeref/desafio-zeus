@@ -207,6 +207,7 @@ function CadastroPage() {
 
   const handleModalConfirmarValores = function () {
     onClickSubmit();
+    atualizarTabela();
     hideModalConfirmarDados();
   };
 
@@ -393,7 +394,7 @@ function CadastroPage() {
                 <MyDataGrid rows={rows} headerClassName="grid-header" />
                 <Button onClick={showModalGrafico}>Gráfico Gasto Mensal</Button>
                 {/* <Button>Gráfico Gasto Diário</Button> */}
-                <Button>Importar Excel</Button>
+                {/* <Button>Importar Excel</Button> */}
               </Grid>
             </Grid>
             {/* Modal para editar valores padrão */}

@@ -166,7 +166,8 @@ export const MyDataGrid = ({
         initialState={{
           pagination: { paginationModel: { pageSize: 5 } },
         }}
-        pageSizeOptions={[5, 10, 20]}
+        // pageSizeOptions={[5, 10, 20]}
+        hideFooterSelectedRowCount
       ></DataGrid>
       <Modal
         title="Editar entrada?"
