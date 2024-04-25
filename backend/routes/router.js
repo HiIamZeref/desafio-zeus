@@ -11,8 +11,13 @@ import {
   getDefaultValues,
   updateDefaultValues,
 } from "../controllers/defaultValuesController.js";
+import { loginUser, registerUser } from "../controllers/UserController.js";
 
 const router = Router();
+
+// Rotas usuários
+router.post("/auth/loginUser", loginUser);
+router.post("/auth/registerUser", registerUser);
 
 // Rotas gastos
 router.get("/gastos", getGastos);

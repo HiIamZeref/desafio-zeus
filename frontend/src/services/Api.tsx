@@ -13,7 +13,7 @@ interface NewGastos {
 }
 
 const api = axios.create({
-  baseURL: "http://localhost:8080",
+  baseURL: "http://172.18.9.214:8080",
 });
 
 //Rotas Gastos
