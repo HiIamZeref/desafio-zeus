@@ -24,6 +24,8 @@ import logo from "../../assets/meu_icone.png";
 import Chart from "chart.js/auto";
 import { CategoryScale } from "chart.js";
 import { Line } from "react-chartjs-2";
+import useIsAuthenticated from "react-auth-kit/hooks/useIsAuthenticated";
+import { useNavigate } from "react-router-dom";
 
 Chart.register(CategoryScale);
 
@@ -43,6 +45,14 @@ interface DefaultValues {
 }
 
 function CadastroPage() {
+  const navigate = useNavigate();
+
+  //
+  const isAuthenticated = useIsAuthenticated();
+  if (!isAuthenticated) {
+    navigate("/");
+  }
+
   // Gerando meu Toast
   const notify = (mensagem: string) =>
     toast.success(mensagem, {

@@ -11,11 +11,16 @@ import {
   getDefaultValues,
   updateDefaultValues,
 } from "../controllers/defaultValuesController.js";
-import { loginUser, registerUser } from "../controllers/UserController.js";
+import { loginUser, registerUser } from "../controllers/AuthController.js";
+import { getUserData } from "../controllers/UserController.js";
+import { checkUserToken } from "../middlewares/auth.js";
 
 const router = Router();
 
-// Rotas usuários
+// Rotas usuário
+router.get("/user/:_id", checkUserToken, getUserData);
+
+// Rotas autenticação
 router.post("/auth/loginUser", loginUser);
 router.post("/auth/registerUser", registerUser);
 

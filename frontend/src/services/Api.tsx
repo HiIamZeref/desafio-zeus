@@ -1,4 +1,7 @@
 import axios from "axios";
+axios.defaults.headers.common["Authorization"] = `Bearer ${localStorage.getItem(
+  "token"
+)}`;
 
 interface Gastos {
   _id: string;
@@ -42,7 +45,7 @@ export const postGastos = async function (gastos: NewGastos) {
     });
 };
 
-export const deleteGastos = async function (id) {
+export const deleteGastos = async function (id: string) {
   console.log(id, "id");
   return await api
     .delete("/gastos", { data: { _id: id } })
