@@ -22,7 +22,7 @@ const loginUser = async function (req, res) {
 
   if (!user) {
     console.log("Usuário não encontrado!");
-    return res.status(404).send({
+    return res.status(418).send({
       status: "error",
       message: "Usuário não encontrado!",
     });

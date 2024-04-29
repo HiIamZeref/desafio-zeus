@@ -11,7 +11,7 @@ import {
   getDefaultValues,
   patchDefaultValues,
   getGastosMesTotal,
-} from "../../services/Api";
+} from "../../services/DadosApi.tsx";
 import Grid from "@mui/material/Unstable_Grid2";
 import { ObjectId } from "mongoose";
 import { InputNumber, Modal, Statistic } from "antd";
@@ -24,8 +24,9 @@ import logo from "../../assets/meu_icone.png";
 import Chart from "chart.js/auto";
 import { CategoryScale } from "chart.js";
 import { Line } from "react-chartjs-2";
-import useIsAuthenticated from "react-auth-kit/hooks/useIsAuthenticated";
 import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../../contexts/AuthContext.tsx";
 
 Chart.register(CategoryScale);
 
@@ -46,12 +47,23 @@ interface DefaultValues {
 
 function CadastroPage() {
   const navigate = useNavigate();
+  const { authenticated, handleLogout } = useContext(AuthContext);
 
-  //
-  const isAuthenticated = useIsAuthenticated();
-  if (!isAuthenticated) {
-    navigate("/");
-  }
+  useEffect(() => {
+    if (!authenticated) {
+      navigate("/");
+      toast.error("Você não está logado!", {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+  }, [authenticated, navigate]);
 
   // Gerando meu Toast
   const notify = (mensagem: string) =>
@@ -65,7 +77,6 @@ function CadastroPage() {
       progress: undefined,
       theme: "light",
     });
-  console.log("ALo");
 
   // Gerando gasto mensal e meta de gastos
   const [gastoMesAtual, setGastoMesAtual] = useState(0);
@@ -403,7 +414,14 @@ function CadastroPage() {
               <Grid xs={12} sm={10}>
                 <MyDataGrid rows={rows} headerClassName="grid-header" />
                 <Button onClick={showModalGrafico}>Gráfico Gasto Mensal</Button>
-                {/* <Button>Gráfico Gasto Diário</Button> */}
+                <Button
+                  onClick={() => {
+                    handleLogout();
+                    navigate("/");
+                  }}
+                >
+                  Logout Teste
+                </Button>
                 {/* <Button>Importar Excel</Button> */}
               </Grid>
             </Grid>

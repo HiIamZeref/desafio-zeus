@@ -1,33 +1,27 @@
 import "../../App.css";
 import theme from "@/styles/theme/default";
-import { Container, ThemeProvider, TextField, InputLabel } from "@mui/material";
+import { Container, ThemeProvider } from "@mui/material";
 import logo from "../../assets/meu_icone.png";
 import { Button, Grid } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { userLogin, getUserData } from "@/services/UserApi";
-import { User } from "@/@types/types";
+import { useContext, useState, useEffect } from "react";
+import { AuthContext } from "@/contexts/AuthContext.tsx";
+import { Input } from "antd";
+import { toast } from "react-toastify";
 
 function LoginPage() {
   const navigate = useNavigate();
-  const credentials: User = {
-    email: "felipe@gmail.com",
-    password: "123",
-  };
 
-  const handleLogin = () => {
-    userLogin(credentials)
-      .then((response) => {
-        console.log(response.data);
-        localStorage.setItem("token", response.data.token);
-        getUserData("662aade548bd38e90d729e9c").then((response) => {
-          console.log(response.data);
-          navigate("/cadastro");
-        });
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const { handleLogin, authenticated } = useContext(AuthContext);
+
+  useEffect(() => {
+    if (authenticated) {
+      navigate("/cadastro");
+    }
+  }, [authenticated, navigate]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -38,18 +32,38 @@ function LoginPage() {
         </Grid>
         <Container>
           <h1>Email</h1>
-          <TextField>
-            <InputLabel>Usuário</InputLabel>
-          </TextField>
+          <Input
+            size="large"
+            value={email}
+            onChange={(text) => setEmail(text.target.value)}
+            placeholder="Digite o email"
+          />
           <h1>Senha</h1>
-          <TextField>
-            <InputLabel>Senha</InputLabel>
-          </TextField>
+          <Input.Password
+            size="large"
+            value={password}
+            onChange={(text) => setPassword(text.target.value)}
+            placeholder="Digite a senha"
+          />
           <Button
             className="default-btn"
             variant="contained"
             style={{ display: "block", color: "" }}
-            onClick={() => handleLogin()}
+            onClick={() => {
+              handleLogin(email, password).catch(() => {
+                console.log("Erro ao realizar login");
+                toast.error("Usuário ou senha inválidos", {
+                  position: "top-center",
+                  autoClose: 3000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "light",
+                });
+              });
+            }}
           >
             Login
           </Button>

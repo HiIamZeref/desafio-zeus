@@ -1,7 +1,4 @@
-import axios from "axios";
-axios.defaults.headers.common["Authorization"] = `Bearer ${localStorage.getItem(
-  "token"
-)}`;
+import { api } from "./Api.ts";
 
 interface Gastos {
   _id: string;
@@ -14,10 +11,6 @@ interface NewGastos {
   quantidade: number;
   dinheiro: number;
 }
-
-const api = axios.create({
-  baseURL: "http://172.18.9.214:8080",
-});
 
 //Rotas Gastos
 export const getGastos = async function () {
